@@ -1,0 +1,355 @@
+/* মূল বডি এবং ব্যাকগ্রাউন্ড সেটআপ */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-image: url(photo.jpg);
+    background-size: cover;
+    background-position: top center;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* ২. হেডার ইমেজ ডিজাইন (সম্পূর্ণ রেসপনসিভ) */
+.main-header {
+    width: 100%;
+    display: block;
+    line-height: 0; /* ছবির নিচের ডিফল্ট স্পেস সরানোর জন্য */
+}
+
+.header-img {
+    width: 100%;
+    height: auto; /* স্ক্রিন ছোট বড় হলে ছবিও সমানুপাতিকভাবে ছোট বড় হবে */
+    display: block;
+}
+
+/* ৩. নেভিগেশন বার (Running Notice) */
+.navbar {
+    width: 100%;
+    /* ওপরে ও নিচে ১ পিক্সেলের বর্ডার (দুই পাশে বর্ডার নিশ্চিত করতে) */
+    border-top: 1.5px solid #b0b0b0; 
+    border-bottom: 1.5px solid #b0b0b0; 
+    background-color: #e9ecef; /* আপনার রিকোয়ারমেন্ট অনুযায়ী হালকা ধূসর কালার */
+    display: flex;
+    align-items: center;
+    
+    /* ১৪ পিক্সেল উচ্চতা দেওয়ার জন্য ওপরে নিচে ৪ পিক্সেল প্যাডিং দেওয়া হয়েছে */
+    padding: 8px 0; 
+    overflow: hidden;
+}
+
+.navbar marquee {
+    font-size: 18px;
+    font-weight: bold;
+    color: #9222ee; /* নোটিশের টেক্সট প্রফেশনাল লাল কালার */
+}
+
+/* দুটি নোটিশের মাঝখানের ডিভাইডার বা স্পেস */
+.navbar marquee .separator {
+    margin: 0 40px;
+    color: #6c757d;
+}
+.container {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* বিভাগ শিরোনাম */
+.section-title {
+    background: rgba(28, 127, 219, 0.85);
+    color: white;
+    padding: 14px;
+    border-radius: 8px;
+    margin-top: 35px;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title.staff {
+    background: rgba(28, 127, 219, 0.85); 
+}
+
+/* আধুনিক গ্লাস-মরফিজম কার্ড (ব্যাকগ্রাউন্ড অপাসিটি .5 + ব্লার .5) */
+.card {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);        /* ব্লার ইফেক্ট .5 (5px) */
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* নাম স্টাইল */
+.name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fcfcfd;
+    margin-bottom: 12px;
+}
+
+/*
+   পদবি, নম্বর ও বাটনের মূল লাইন
+   বিন্যাস (ডেস্কটপ ও মোবাইল — দুই জায়গাতেই একই ক্রম):
+   বাম = পদবি | মাঝ = ফোন নম্বর | ডান = পরিচিতি বাটন
+*/
+.meta-line {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 25%; /* 👈 এটি পরিচিতি বাটন এবং নাম্বারের মাঝের দূরত্ব। নাম্বারটি আরও বামে সরাতে চাইলে ২০ কমিয়ে ১৫ বা ১০ করতে পারেন */
+}
+
+.btn-wrap {
+    flex: 1 1 0;
+    display: flex;
+    justify-content: flex-end;
+    order: 3;
+    min-width: 0;
+}
+
+/* ডানের পরিচিতি বাটন */
+.info-btn,
+.info-btn.staff-btn {
+    background: #229e71;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0, 168, 107, 0.2);
+    transition: background 0.2s;
+}
+
+.info-btn:hover,
+.info-btn.staff-btn:hover {
+    background: #0fdf43;
+}
+
+
+
+/* মাঝখানের মোবাইল নম্বর ও আইকন */
+.phone-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    order: 2;
+    flex: 1 1 0;
+    justify-content: flex-end;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.phone-icon {
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.phone-link, 
+.phone-link.staff-link {
+    color: #e6dcdc;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.phone-link:hover {
+    text-decoration: underline;
+}
+
+
+
+/* ডানের পদবি */
+.position {
+    font-size: 16px;
+    color: #e6dcdc;
+    font-weight: 500;
+    order: 1;
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
+    
+}
+
+/* হাইড থাকা পরিচিতি টেক্সট বক্স */
+.details-text {
+    display: none;
+    margin-top: 14px;
+    padding-top: 10px;
+    padding: 0px;
+    border-top: 1px dashed rgb(255, 255, 255);
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 1.6;
+    width: 100%;
+    text-align: justify;
+    
+}
+
+.details-text.show {
+    display: block;
+}
+
+/*
+   মোবাইল রেসপন্সিভ সেটআপ
+   ছোট স্ক্রিনে জায়গা কমে যাওয়ায় ফন্ট ও স্পেসিং একটু ছোট করা হলো,
+   কিন্তু বাম=বাটন / মাঝ=নম্বর / ডান=পদবি — এই একই অনুভূমিক ক্রম
+   ডেস্কটপ ও মোবাইল দুই জায়গাতেই বজায় থাকে।
+*/
+@media (max-width: 480px) {
+    .meta-line {
+        gap: 6px;
+    }
+    .info-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        order: 3;
+        flex: 0 0 80px;
+        text-align: center;
+}
+
+    }
+    .phone-box {
+        font-size: 14px;
+        min-width: 0;
+    }
+    .position {
+        font-size: 14px;
+        flex: 0 0 90px;
+    }
+    
+.footer-table {
+    max-width: 800px; /* কম্পিউটারের জন্য চওড়া সাইজ */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.table-row:not(.row-head):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ১ম রো: শিরোনাম উজ্জ্বল করা হলো */
+.row-head {
+    background-color: #2563eb; 
+    border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+/* সাধারণ সেল ডিজাইন */
+.table-cell {
+    padding: 18px 15px;
+    text-align: center;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+    white-space: nowrap; /* টেক্সট যেন কোনোভাবেই নিচে না নামে */
+}
+
+/* 💡 শিরোনাম 'যোগাযোগ' পুরো ঘর জুড়ে মাঝখানে থাকবে */
+.head-title {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+/* 💡 নামের কলামটি বড় করা হলো (১.৮ গুণ) যাতে নাম এক লাইনে ধরে */
+.name-cell {
+    flex: 1.8;
+    text-align: left; /* নামগুলো বাম থেকে শুরু হলে দেখতে সুন্দর লাগবে */
+    padding-left: 25px;
+}
+
+/* 💡 পদবির কলামটি যতটুকু দরকার ঠিক ততটুকু থাকবে */
+.des-cell {
+    flex: 1.2;
+    text-align: center;
+}
+
+/* 💡 মোবাইল নম্বরের কলামটি ফিক্সড ও সুন্দর করা হলো */
+.phone-cell {
+    flex: 1;
+    text-align: right;
+    padding-right: 25px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* ==========================================================================
+   ৯. মোবাইল ও রেসপনসিভ কাস্টমাইজেশন
+   ========================================================================== */
+@media (max-width: 768px) {
+    .portal-container {
+        width: 92%;
+        gap: 20px;
+    }
+
+    .section-box {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 25px 20px;
+    }
+
+    .kitab-head .kitab-name {
+        font-size: 22px;
+    }
+
+    .kitabdropdown-box {
+        width: 100%;
+    }
+
+    .footer-table {
+        max-width: 95%;
+    }
+
+    /* মোবাইলের ছোট স্ক্রিনে নাম যেন কেটে না যায় সেজন্য ফ্লেক্স এবং স্ক্রলিং সাপোর্ট */
+    .table-row:not(.row-head) {
+        flex-direction: column; /* মোবাইলে নাম, পদবি, নাম্বার উপর-নিচে বসবে */
+        padding: 15px 0;
+        gap: 8px;
+    }
+    
+    .table-cell {
+        font-size: 16px;
+        padding: 5px 10px !important;
+        text-align: center !important;
+        flex: unset !important;
+        width: 100%;
+        color: white;
+    }
+    
+    .row-head {
+        padding: 0;
+    }
+}
