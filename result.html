@@ -1,145 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>madrasa</title>
+    <link rel="stylesheet" href="css/result-app.css">
+    <title>পরীক্ষার ফলাফল</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXWEDQ6C8T"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WXWEDQ6C8T');
+    </script>
 </head>
 <body>
 
     <!-- ১. একেবারে উপরে হেডার: লোগো বা ব্যানার ছবি -->
     <header class="main-header">
-        <!-- আপনার লোগো বা ব্যানারের ছবির লিংক বা নাম এখানে দিন -->
         <img src="photo2.jpg" alt="Madrasa Banner" class="header-img">
     </header>
 
-    <!-- ২. নেভিগেশন বার: ধূসর রঙের রানিং নোটিশ বোর্ড -->
+    <!-- ২. নেভিগেশন বার -->
     <nav class="navbar">
         <marquee behavior="scroll" direction="left" scrollamount="5">
-            <!--<span>আজীবন সদস্য সম্মেলন আগামী ১০ই জুলাই রোজ শুক্রবার।</span>
-            <span class="separator">|</span>-->
             <span></span>
         </marquee>
     </nav>
 
-    <!-- ৩. মেইন সেকশন: ৩টি রেজাল্ট পোর্টাল বক্স -->
-    <main class="main">
-        <div class="portal-container">
-            
-            <!-- কিতাব বিভাগ -->
-            <section class="section-box">
-                <div class="kitab-head">
-                    <p class="kitab-name">কিতাব বিভাগ</p>
-                </div>
-                <div class="kitabdropdown-box">
-                    <div class="dropdown">
-                        <select name="class_select" onchange="goToLink(this)">
-                            <option value="" disabled selected>ফলাফল ডাউনলোড করুন</option>
-                            <option value="https://drive.google.com/file/d/1ZWLoNb2UFc6K8ieuXzE9bKXIESDOyBIl/view?usp=drive_link">এদাদিয়া</option>
-                            <option value="https://drive.google.com/file/d/1QI-1KdGt6eeAKoR59OhjiH4x4JvRwCMi/view?usp=drive_link">তাইসির</option>
-                            <option value="https://drive.google.com/file/d/1f3yocTHhmgw_HY4N6uLsv38Mn_R6Ne-e/view?usp=drive_link">মিযান</option>
-                            <option value="https://drive.google.com/file/d/1k05U4p3zbWlXCqi_ejX9543g24wkOzp5/view?usp=drive_link">নাহবেমির</option>
-                            <option value="https://drive.google.com/file/d/1kY4twkh2t2zLwfEcbP5rG7dRMpfztszx/view?usp=drive_link">হেদায়াতুন নাহু</option>
-                            <option value="https://drive.google.com/file/d/1trYLnZZnfSY58Zql5wodf3H45yEyvZc3/view?usp=drive_link">কাফিয়া</option>
-                            <option value="https://drive.google.com/file/d/1mqH9G8g4Nb80o-0N2KtzHXetwIH_g7w4/view?usp=drive_link">শরহে জামি</option>
-                            <option value="https://drive.google.com/file/d/1ja9r-W_CNnadW3CtbYja0hTtYxaRPlPY/view?usp=drive_link">শরহে বেকায়া</option>
-                            <option value="https://drive.google.com/file/d/19iwAFTAefGPM9JjGQAHIxO0M8G7zHX_V/view?usp=drive_link">জালালাইন</option>
-                            <option value="https://drive.google.com/file/d/1ThYp9PzAd-9KCWrD8JRBqeolRcT1JKwS/view?usp=drive_link">মিশকাত</option>
-                            <option value="https://drive.google.com/file/d/1PpI4z3mhEqNNgD92R1K3_8JfMwJrjthC/view?usp=drive_link">তাকমিল</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- হিফজ বিভাগ -->
-            <section class="section-box">
-                <div class="kitab-head">
-                    <p class="kitab-name">হিফজ বিভাগ</p>
-                </div>
-                <div class="kitabdropdown-box">
-                    <div class="dropdown">
-                        <select name="class_select" onchange="goToLink(this)">
-                            <option value="" disabled selected>ফলাফল</option>
-                            <option value="https://drive.google.com/file/d/1XOMKpIsPXYiuIK5ysZThJCm1ztf6DD44/view?usp=drive_link">ডাউনলোড করুন</option>
-                            <!--<option value="" disabled selected>গ্রুপ নির্বাচন করুন</option>
-                            <option value="https://drive.google.com/file/d/1XOMKpIsPXYiuIK5ysZThJCm1ztf6DD44/view?usp=drive_link">সম্মিলিত ফলাফল</option>
-                            <option value="#">১০ পারা গ্রুপ</option>
-                            <option value="#">২০ পারা গ্রুপ</option>
-                            <option value="#">৩০ পারা গ্রুপ</option>
-                            <option value="#">খতমি গ্রুপ</option>
-                            <option value="#">১ম গ্রুপ</option>
-                            <option value="#">২য় গ্রুপ</option>
-                            <option value="#">৩য় গ্রুপ</option>
-                            <option value="#">৪র্থ গ্রুপ</option>
-                            <option value="#">৫ম গ্রুপ</option>
-                            <option value="#">৬ষ্ঠ গ্রুপ</option>
-                            <option value="#">৭ম গ্রুপ</option>--> 
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- মকতব বিভাগ -->
-            <section class="section-box">
-                <div class="kitab-head">
-                    <p class="kitab-name">মকতব বিভাগ</p>
-                </div>
-                <div class="kitabdropdown-box">
-                    <div class="dropdown">
-                        <select name="class_select" onchange="goToLink(this)">
-                            <option value="" disabled selected>ফলাফল</option>
-                            <option value="https://drive.google.com/file/d/1mmO01nFFuCQUCiVZl3ZAZKPLeFVrJIpI/view?usp=drive_link">ডাউনলোড করুন</option>
-
-                            <!--<option value="" disabled selected>গ্রুপ নির্বাচন করুন</option>
-                            <option value="https://google.com">বোর্ড গ্রুপ</option>
-                            <option value="https://google.com">আম্মাপারা গ্রুপ</option>
-                            <option value="https://google.com">নাজেরা গ্রুপ</option>-->
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-        </div>
+    <!-- ৩. ফলাফল অ্যাপ -->
+    <main class="rp-wrap">
+        <div id="rpStatus" class="rp-status" style="display:none;"></div>
+        <div id="rpApp"></div>
     </main>
-   <footer class="main-footer">
+
+    <footer class="main-footer">
         <div class="footer-table">
-            
-            <!-- ১ম রো: কেবল একটি শিরোনাম "যোগাযোগ" যা মাঝখানে থাকবে -->
             <div class="table-row row-head">
                 <div class="table-cell head-title">যোগাযোগ</div>
             </div>
-            
-            <!-- ২য় রো: মুফতি আব্দুল ওয়াহিদ কাসেমি সাহেবের তথ্য -->
             <div class="table-row">
-                <div class="table-cell name-cell">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
-                <div class="table-cell des-cell">মুহতামিমে জামিয়া</div>
+                <div class="table-cell name-cell">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
+                <div class="table-cell des-cell">মুহতামিমে জামিয়া</div>
                 <div class="table-cell phone-cell">01815 559802</div>
             </div>
-            
-            <!-- ৩য় রো: মাওলানা সানা আব্দুল্লাহ মামুন সাহেবের তথ্য -->
             <div class="table-row">
                 <div class="table-cell name-cell">মাওলানা সাদ আব্দুল্লাহ মামুন</div>
                 <div class="table-cell des-cell">নাযিমে তালিমাত</div>
                 <div class="table-cell phone-cell">01915 689721</div>
             </div>
-
         </div>
     </footer>
 
-    <!-- ড্রাইভের পিডিএফ লিংক খোলার স্ক্রিপ্ট -->
-    <script>
-    function goToLink(dropdown) {
-        var url = dropdown.value;
-        if (!url) return;
-        
-        var a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank'; 
-        document.body.appendChild(a);
-        a.click(); 
-        document.body.removeChild(a);
-    }
-    </script>
+    <!-- ============ Excel পড়ার Library (CDN) ============ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- ============ ফলাফল হিসাব-ইঞ্জিন (নির্দিষ্ট ক্রমে লোড হতে হবে) ============ -->
+    <script src="js/utils.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/ranking.js"></script>
+    <script src="js/excel.js"></script>
+    <script src="js/kitab.js"></script>
+    <script src="js/hifz.js"></script>
+    <script src="js/maktab.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/result-app.js"></script>
 </body>
 </html>
