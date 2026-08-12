@@ -1,0 +1,206 @@
+/**
+ * result-app.css
+ * ------------------------------------------------------------
+ * পাবলিক ফলাফল অ্যাপের নিজস্ব স্টাইল। সব ক্লাস "rp-" প্রিফিক্স দিয়ে
+ * লেখা হয়েছে, যাতে সাইটের বিদ্যমান style.css-এর কোনো ক্লাসের সাথে
+ * সংঘর্ষ না হয়।
+ * ------------------------------------------------------------
+ */
+
+.rp-wrap {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px 40px;
+    font-family: inherit;
+}
+
+.rp-status {
+    max-width: 900px;
+    margin: 16px auto;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #fff8e1;
+    color: #7a5b00;
+    text-align: center;
+    font-size: 14px;
+}
+.rp-status-error { background: #fdecea; color: #b3261e; }
+
+/* হোম কার্ড গ্রিড */
+.rp-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+@media (max-width: 520px) {
+    .rp-cards { grid-template-columns: 1fr; }
+}
+.rp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 24px 12px;
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.12);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.rp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20, 20, 60, 0.18); }
+.rp-card-icon { font-size: 30px; }
+.rp-card-title { font-size: 16px; font-weight: 700; color: #1f2a44; }
+.rp-card-sub { font-size: 12px; color: #6b7280; }
+
+/* Back bar */
+.rp-backbar { margin-bottom: 14px; }
+.rp-back {
+    border: none;
+    background: rgba(255,255,255,0.85);
+    color: #1f2a44;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(20,20,60,0.12);
+}
+.rp-back:hover { background: #ffffff; }
+
+.rp-panel {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.12);
+}
+.rp-panel-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2a44;
+    margin: 0 0 16px;
+    text-align: center;
+}
+
+/* বিভাগ নির্বাচন */
+.rp-dept-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+@media (max-width: 560px) {
+    .rp-dept-grid { grid-template-columns: 1fr; }
+}
+.rp-dept-btn {
+    padding: 18px 10px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #16a34a, #0f6e4f);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15,110,79,0.25);
+}
+.rp-dept-btn:hover { filter: brightness(1.08); }
+
+/* জামাত/গ্রুপ নির্বাচন */
+.rp-group-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+@media (max-width: 560px) {
+    .rp-group-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.rp-group-btn {
+    padding: 14px 8px;
+    border: 1px solid #d7e3da;
+    border-radius: 10px;
+    background: #f4faf6;
+    color: #14532d;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+.rp-group-btn:hover { background: #e5f5ea; }
+.rp-group-btn-all { grid-column: 1 / -1; background: #eaf1ff; border-color: #cddcff; color: #1e3a8a; }
+
+/* সার্চ */
+.rp-search-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.rp-input {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d7dbe3;
+    font-size: 15px;
+}
+.rp-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #0f6e4f;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+.rp-btn:hover { background: #0c5940; }
+.rp-empty { text-align: center; color: #6b7280; padding: 20px 0; }
+
+/* ব্যক্তিগত ফলাফল কার্ড */
+.rp-personal-card {
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 8px;
+}
+.rp-personal-head { text-align: center; margin-bottom: 10px; }
+.rp-personal-name { font-size: 19px; font-weight: 800; color: #1f2a44; }
+.rp-personal-sub { font-size: 13px; color: #6b7280; }
+.rp-personal-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.rp-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+.rp-stat {
+    flex: 1 1 120px;
+    background: #f7f9fb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+}
+.rp-stat span { display: block; font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.rp-stat b { font-size: 16px; color: #1f2a44; }
+
+/* টেবিল */
+.rp-table-wrap { overflow-x: auto; }
+.rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rp-table th, .rp-table td {
+    border: 1px solid #e5e7eb;
+    padding: 6px 8px;
+    text-align: center;
+    white-space: nowrap;
+}
+.rp-table thead th { background: #f0f4f2; color: #1f2a44; }
+.rp-table .rp-td-name { text-align: right; white-space: normal; min-width: 120px; }
+.rp-table-sm td, .rp-table-sm th { white-space: normal; }
+
+.rp-grade-pass { color: #0f6e4f; font-weight: 700; }
+.rp-grade-fail { color: #b3261e; font-weight: 700; }
+.rp-grade-special { color: #92610a; font-weight: 700; }
+
+/* চার্ট */
+.rp-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.rp-chart-wrap canvas { max-width: 100%; }
+.rp-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; font-size: 13px; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
