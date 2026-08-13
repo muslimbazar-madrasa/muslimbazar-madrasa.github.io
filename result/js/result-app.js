@@ -1,277 +1,598 @@
 /**
- * result-app.css
+ * result-app.js
  * ------------------------------------------------------------
- * পাবলিক ফলাফল অ্যাপের স্টাইল। সব ক্লাস "rp-" প্রিফিক্স দিয়ে লেখা।
+ * পাবলিক ফলাফল পেইজের সম্পূর্ণ Logic।
+ * data/result-data.xlsx ফাইল থেকে সরাসরি ফলাফল পড়ে, একই হিসাব-ইঞ্জিন
+ * (KitabEngine/HifzEngine/MaktabEngine/RankingEngine) দিয়ে গণনা করে
+ * চারটি ভিউ দেখায়: ব্যক্তিগত ফলাফল, জামাত/গ্রুপ-ভিত্তিক ফলাফল,
+ * এক নজরে ফলাফল, পাইচার্ট।
+ *
+ * ব্র্যান্ডিং/মাদরাসার নাম-ঠিকানা/পরীক্ষার নাম বদলাতে হলে site-config.js
+ * ফাইল দেখুন। ডেটা আপডেট করতে শুধু data/result-data.xlsx ফাইল বদলে
+ * দিলেই হবে - কোনো কোড পরিবর্তনের দরকার নেই।
  * ------------------------------------------------------------
  */
 
-:root {
-    --rp-green: #0f6e4f;
-    --rp-green-dark: #0c5940;
-    --rp-green-light: #16a34a;
-    --rp-ink: #1f2a44;
-    --rp-muted: #6b7280;
-    --rp-border: #dfe4e0;
-    --rp-bg: #eef2f0;
-}
+(function () {
+    const EXCEL_PATH = 'data/result-data.xlsx';
 
-* { box-sizing: border-box; }
+    const app = document.getElementById('rpApp');
+    const statusBox = document.getElementById('rpStatus');
 
-body {
-    margin: 0;
-    background: var(--rp-bg);
-    color: var(--rp-ink);
-    font-family: 'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif;
-}
+    let CALC = null;          // { kitab: {jamah: {...}}, hifz: {...}, maktab: {...} }
+    let ALL_STUDENTS = [];    // সব বিভাগের ছাত্র একত্রে (রোল সার্চের জন্য)
+    let loadPromise = null;
 
-/* ================= টপ নেভিগেশন বার ================= */
+    const HIFZ_LABEL_SUBJECTS = ['কুরআন', 'তাজবিদ', 'মাসাইল'];
 
-.rp-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: linear-gradient(135deg, var(--rp-green), var(--rp-green-dark));
-    color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-}
-.rp-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.rp-brand-logo {
-    width: 46px; height: 46px; border-radius: 50%;
-    object-fit: cover; background: #fff; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.5);
-}
-.rp-brand-text { min-width: 0; }
-.rp-brand-name {
-    font-weight: 800; font-size: 15px; line-height: 1.3;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rp-brand-addr { font-size: 11.5px; opacity: 0.9; }
+    // ---------------------- ডেটা লোড ----------------------
 
-.rp-nav { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.rp-nav-btn {
-    border: none; background: rgba(255,255,255,0.12); color: #fff;
-    font-weight: 600; font-size: 13px; padding: 8px 14px;
-    border-radius: 999px; cursor: pointer; white-space: nowrap;
-    transition: background 0.15s ease;
-}
-.rp-nav-btn:hover { background: rgba(255,255,255,0.24); }
-.rp-nav-btn.active { background: #fff; color: var(--rp-green-dark); }
-.rp-nav-home {
-    border: none; background: transparent; color: #eafff2;
-    font-size: 12px; text-decoration: none; padding: 6px 8px;
-    opacity: 0.9;
-}
-.rp-nav-home:hover { text-decoration: underline; }
+    function setStatus(msg, isError) {
+        if (!statusBox) return;
+        statusBox.style.display = msg ? 'block' : 'none';
+        statusBox.textContent = msg || '';
+        statusBox.className = 'rp-status' + (isError ? ' rp-status-error' : '');
+    }
 
-/* ================= কনটেইনার / সাধারণ কার্ড ================= */
+    async function loadData() {
+        if (loadPromise) return loadPromise;
+        loadPromise = (async () => {
+            setStatus('ফলাফল লোড হচ্ছে, একটু অপেক্ষা করুন...', false);
+            let res;
+            try {
+                res = await fetch(EXCEL_PATH, { cache: 'no-store' });
+            } catch (e) {
+                throw new Error('ফলাফল ফাইল লোড করা যায়নি (নেটওয়ার্ক সমস্যা)।');
+            }
+            if (!res.ok) {
+                throw new Error('এখনো কোনো ফলাফল প্রকাশ করা হয়নি।');
+            }
+            const blob = await res.blob();
+            const { success, report, data } = await ExcelEngine.importExcelFile({ file: blob });
+            if (!success) {
+                throw new Error((report.errors && report.errors[0]) || 'ফলাফল ফাইল পড়তে সমস্যা হয়েছে।');
+            }
 
-.rp-wrap {
-    max-width: 980px;
-    margin: 22px auto;
-    padding: 0 16px 40px;
-}
+            CALC = {
+                kitab: KitabEngine.calculateAll(data.kitab),
+                hifz: HifzEngine.calculateAll(data.hifz),
+                maktab: MaktabEngine.calculateAll(data.maktab)
+            };
 
-.rp-status {
-    max-width: 980px;
-    margin: 16px auto;
-    padding: 12px 16px;
-    border-radius: 10px;
-    background: #fff8e1;
-    color: #7a5b00;
-    text-align: center;
-    font-size: 14px;
-}
-.rp-status-error { background: #fdecea; color: #b3261e; }
+            ALL_STUDENTS = [];
+            CONSTANTS.KITAB_JAMAH_ORDER.forEach(jamah => {
+                const jd = CALC.kitab[jamah];
+                if (!jd) return;
+                jd.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'কিতাব বিভাগ', jamahLabel: jamah, subjectHeaders: jd.subjectHeaders }));
+            });
+            if (CALC.hifz) {
+                CALC.hifz.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'হিফজ বিভাগ', jamahLabel: (s.examGroup || ''), subjectHeaders: HIFZ_LABEL_SUBJECTS }));
+            }
+            if (CALC.maktab) {
+                CALC.maktab.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'মকতব বিভাগ', jamahLabel: (s.group || s.class || ''), subjectHeaders: CALC.maktab.subjectHeaders }));
+            }
 
-.rp-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-}
-@media (max-width: 520px) { .rp-cards { grid-template-columns: 1fr; } }
-.rp-card {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 26px 12px; border: none; border-radius: 16px; background: #fff;
-    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1);
-    cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.rp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20, 20, 60, 0.16); }
-.rp-card-icon { font-size: 30px; }
-.rp-card-title { font-size: 16px; font-weight: 700; color: var(--rp-ink); }
-.rp-card-sub { font-size: 12px; color: var(--rp-muted); }
+            setStatus('', false);
+        })();
+        return loadPromise.catch(err => {
+            setStatus(err.message || 'একটি সমস্যা হয়েছে।', true);
+            loadPromise = null;
+            throw err;
+        });
+    }
 
-.rp-backbar { margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.rp-back {
-    border: none; background: #fff; color: var(--rp-ink); font-weight: 600;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
-    box-shadow: 0 2px 8px rgba(20,20,60,0.1);
-}
-.rp-back:hover { background: #f3f6f4; }
+    // ---------------------- সাধারণ Helper ----------------------
 
-.rp-print-btn {
-    border: none; background: var(--rp-green); color: #fff; font-weight: 600;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
-}
-.rp-print-btn:hover { background: var(--rp-green-dark); }
+    function esc(v) { return Utils.escapeHtml(String(v === null || v === undefined ? '' : v)); }
+    function bn(v) { return Utils.toBanglaNumber(v); }
 
-.rp-panel { background: #fff; border-radius: 16px; padding: 22px; box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1); }
-.rp-panel-title { font-size: 18px; font-weight: 700; color: var(--rp-ink); margin: 0 0 18px; text-align: center; position: relative; padding-bottom: 10px; }
-.rp-panel-title::after {
-    content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 70px; height: 3px; background: #e9a227; border-radius: 3px;
-}
+    function gradeClass(grade) {
+        if ([CONSTANTS.STATUS.ABSENT, CONSTANTS.STATUS.SUSPENDED, CONSTANTS.STATUS.CANCELLED].includes(grade)) return 'rp-grade-special';
+        if (grade === CONSTANTS.GRADE.RASIB) return 'rp-grade-fail';
+        return 'rp-grade-pass';
+    }
 
-/* বিভাগ নির্বাচন */
-.rp-dept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-@media (max-width: 560px) { .rp-dept-grid { grid-template-columns: 1fr; } }
-.rp-dept-btn {
-    padding: 18px 10px; border: none; border-radius: 14px;
-    background: linear-gradient(135deg, var(--rp-green-light), var(--rp-green-dark));
-    color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
-    box-shadow: 0 4px 12px rgba(15,110,79,0.25);
-}
-.rp-dept-btn:hover { filter: brightness(1.08); }
+    function dateLabel() {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        return cfg.publishDate ? `তারিখ: ${Utils.formatDateBangla(cfg.publishDate)}` : '';
+    }
 
-/* জামাত/গ্রুপ নির্বাচন */
-.rp-group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-@media (max-width: 560px) { .rp-group-grid { grid-template-columns: repeat(2, 1fr); } }
-.rp-group-btn {
-    padding: 14px 8px; border: 1px solid #d7e3da; border-radius: 10px;
-    background: #f4faf6; color: #14532d; font-weight: 600; font-size: 14px; cursor: pointer;
-}
-.rp-group-btn:hover { background: #e5f5ea; }
-.rp-group-btn-all { grid-column: 1 / -1; background: #eaf1ff; border-color: #cddcff; color: #1e3a8a; }
+    // মাদরাসার নাম/ঠিকানা/লোগো/পরীক্ষার নাম সহ প্রতিটি রিপোর্টের উপরের অংশ
+    function reportHeadHTML(subtitle) {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const logoHtml = cfg.logo
+            ? `<img src="${esc(cfg.logo)}" class="rp-report-logo" onerror="this.style.display='none'" alt="logo" />`
+            : '';
+        return `
+        <div class="rp-report-head">
+            ${logoHtml}
+            <h2 class="rp-report-name">${esc(cfg.madrasaName || '')}</h2>
+            <div class="rp-report-addr">${esc(cfg.address || '')}</div>
+            <div class="rp-report-exam">${esc(cfg.examName || '')}</div>
+            ${subtitle ? `<div class="rp-report-subtitle">${esc(subtitle)}</div>` : ''}
+        </div>`;
+    }
 
-/* সার্চ ফর্ম */
-.rp-form-label { font-size: 13px; color: var(--rp-muted); margin: 0 0 6px; font-weight: 600; }
-.rp-form-row { margin-bottom: 16px; }
-.rp-search-row { display: flex; gap: 10px; }
-.rp-input, .rp-select {
-    flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #d7dbe3;
-    font-size: 15px; font-family: inherit; background: #fff;
-}
-.rp-btn {
-    padding: 12px 22px; border: none; border-radius: 10px; background: var(--rp-green);
-    color: #fff; font-weight: 700; cursor: pointer;
-}
-.rp-btn:hover { background: var(--rp-green-dark); }
-.rp-empty { text-align: center; color: var(--rp-muted); padding: 20px 0; }
+    function printButtonHTML() {
+        return `<div style="text-align:center;margin-top:20px;">
+            <button class="rp-print-btn" onclick="window.print()">🖨️ প্রিন্ট করুন</button>
+        </div>`;
+    }
 
-/* ================= রিপোর্ট হেডার (মাদরাসার নাম/ঠিকানা/পরীক্ষা) ================= */
+    // ---------------------- টপ নেভিগেশন ----------------------
 
-.rp-report-head { text-align: center; margin-bottom: 18px; position: relative; }
-.rp-report-logo {
-    width: 66px; height: 66px; border-radius: 50%; object-fit: cover;
-    display: block; margin: 0 auto 6px;
-}
-.rp-report-name { font-size: 20px; font-weight: 800; color: var(--rp-green); margin: 0; }
-.rp-report-addr { font-size: 13px; color: var(--rp-muted); margin: 2px 0 8px; }
-.rp-report-exam { font-size: 14.5px; font-weight: 700; color: var(--rp-ink); margin: 0; }
-.rp-report-subtitle { font-size: 14px; font-weight: 700; color: var(--rp-green-dark); margin-top: 4px; }
+    function initBrand() {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const nameEl = document.getElementById('rpBrandName');
+        const addrEl = document.getElementById('rpBrandAddr');
+        const logoEl = document.getElementById('rpBrandLogo');
+        if (nameEl) nameEl.textContent = cfg.madrasaName || '';
+        if (addrEl) addrEl.textContent = cfg.address || '';
+        if (logoEl && cfg.logo) logoEl.src = cfg.logo;
+    }
 
-/* ================= ব্যক্তিগত ফলাফল (মার্কশিট) ================= */
+    function attachTopNav() {
+        document.querySelectorAll('.rp-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => go(btn.dataset.view));
+        });
+    }
 
-.rp-personal-card { border: 1px solid #eef0f3; border-radius: 14px; padding: 20px; margin-top: 8px; }
+    function setActiveNav(view) {
+        document.querySelectorAll('.rp-nav-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
+    }
 
-.rp-info-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
-.rp-info-table td { border: 1px solid var(--rp-border); padding: 8px 12px; }
-.rp-info-table td.rp-info-label { background: #f4f7f5; font-weight: 700; width: 20%; color: var(--rp-ink); }
-.rp-info-table td.rp-info-value { width: 30%; }
+    // ---------------------- নেভিগেশন / ভিউ কাঠামো ----------------------
 
-.rp-subject-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.rp-subject-table th, .rp-subject-table td { border: 1px solid var(--rp-border); padding: 8px 10px; text-align: center; }
-.rp-subject-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
-.rp-subject-table td.rp-td-name { text-align: left; }
-.rp-subject-table tfoot td { font-weight: 700; background: #f4f7f5; }
-.rp-subject-table tfoot td.rp-foot-label { text-align: right; background: #eef2f0; }
+    function renderHome() {
+        app.innerHTML = `
+        <div class="rp-cards">
+            <button class="rp-card" data-view="search">
+                <span class="rp-card-icon">🔍</span>
+                <span class="rp-card-title">ব্যক্তিগত ফলাফল</span>
+                <span class="rp-card-sub">রোল নম্বর দিয়ে খুঁজুন</span>
+            </button>
+            <button class="rp-card" data-view="jamah">
+                <span class="rp-card-icon">📋</span>
+                <span class="rp-card-title">জামাত/গ্রুপ-ভিত্তিক ফলাফল</span>
+                <span class="rp-card-sub">সম্পূর্ণ তালিকা দেখুন</span>
+            </button>
+            <button class="rp-card" data-view="glance">
+                <span class="rp-card-icon">📊</span>
+                <span class="rp-card-title">এক নজরে ফলাফল</span>
+                <span class="rp-card-sub">সারসংক্ষেপ সারণি</span>
+            </button>
+            <button class="rp-card" data-view="chart">
+                <span class="rp-card-icon">🥧</span>
+                <span class="rp-card-title">ফলাফল পাইচার্ট</span>
+                <span class="rp-card-sub">গ্রাফের মাধ্যমে ফলাফল</span>
+            </button>
+        </div>`;
+        app.querySelectorAll('[data-view]').forEach(btn => {
+            btn.addEventListener('click', () => go(btn.dataset.view));
+        });
+        setActiveNav('home');
+    }
 
-.rp-sign-row { display: flex; justify-content: space-between; gap: 24px; margin-top: 36px; flex-wrap: wrap; }
-.rp-sign-block { flex: 1 1 200px; text-align: center; }
-.rp-sign-line { border-top: 1px solid #333; padding-top: 6px; font-size: 13px; font-weight: 600; }
-.rp-sign-date { font-size: 12px; color: var(--rp-muted); margin-top: 2px; }
+    function backBar(label) {
+        return `<div class="rp-backbar"><button class="rp-back" id="rpBack">← ${esc(label)}</button></div>`;
+    }
 
-.rp-note { font-size: 11.5px; color: var(--rp-muted); margin-top: 18px; line-height: 1.6; border-top: 1px dashed var(--rp-border); padding-top: 10px; }
+    function attachBack() {
+        const b = document.getElementById('rpBack');
+        if (b) b.addEventListener('click', renderHome);
+    }
 
-.rp-grade-pass { color: var(--rp-green-dark); font-weight: 700; }
-.rp-grade-fail { color: #b3261e; font-weight: 700; }
-.rp-grade-special { color: #92610a; font-weight: 700; }
+    function departmentPicker() {
+        return `
+        <div class="rp-dept-grid">
+            <button class="rp-dept-btn" data-dept="kitab">কিতাব বিভাগ</button>
+            <button class="rp-dept-btn" data-dept="hifz">হিফজ বিভাগ</button>
+            <button class="rp-dept-btn" data-dept="maktab">মকতব বিভাগ</button>
+        </div>`;
+    }
 
-/* ================= জামাত/গ্রুপ-ভিত্তিক ফলাফল টেবিল ================= */
+    function bindDeptPicker(onPick) {
+        app.querySelectorAll('.rp-dept-btn').forEach(btn => {
+            btn.addEventListener('click', () => onPick(btn.dataset.dept));
+        });
+    }
 
-.rp-jamah-summary-box {
-    display: inline-flex; flex-direction: column; gap: 3px;
-    border: 1px solid var(--rp-border); border-radius: 8px; background: #f9fbfa;
-    padding: 10px 14px; font-size: 12px; margin: 0 auto 16px; text-align: left;
-}
-.rp-jamah-summary-box div { display: flex; justify-content: space-between; gap: 14px; }
-.rp-jamah-summary-box b { color: var(--rp-green-dark); }
+    // গ্রুপ তালিকা প্রতিটি বিভাগের জন্য: [{key, label}]
+    function groupsOf(dept) {
+        if (dept === 'kitab') return CONSTANTS.KITAB_JAMAH_ORDER.map(j => ({ key: j, label: j }));
+        if (dept === 'hifz') return CONSTANTS.HIFZ_EXAM_GROUPS.map(g => ({ key: g, label: g }));
+        if (dept === 'maktab') {
+            const rows = [];
+            Object.keys(CONSTANTS.MAKTAB_GROUPS).forEach(main => {
+                CONSTANTS.MAKTAB_GROUPS[main].forEach(sub => rows.push({ key: sub, label: sub }));
+            });
+            return rows;
+        }
+        return [];
+    }
 
-.rp-table-wrap { overflow-x: auto; }
-.rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.rp-table th, .rp-table td {
-    border: 1px solid #e5e7eb; padding: 6px 8px; text-align: center; white-space: nowrap;
-}
-.rp-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
-.rp-table .rp-td-name { text-align: left; white-space: normal; min-width: 130px; }
-.rp-table-sm td, .rp-table-sm th { white-space: normal; }
-/* একদম নিচের সামারী সারিতে নাম কলাম ডান দিকে থাকবে */
-.rp-table tfoot td.rp-td-name { text-align: right; }
+    function deptLabel(dept) {
+        return dept === 'kitab' ? 'কিতাব বিভাগ' : dept === 'hifz' ? 'হিফজ বিভাগ' : 'মকতব বিভাগ';
+    }
 
-.rp-vert-th {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    max-height: none;
-    height: auto;
-    white-space: nowrap;
-    vertical-align: bottom;
-    padding: 6px 4px !important;
-    font-size: 12px;
-}
+    function getStudentsAndSubjects(dept, groupKey) {
+        if (dept === 'kitab') {
+            const jd = CALC.kitab[groupKey];
+            if (!jd) return null;
+            return { students: jd.students, subjectHeaders: jd.subjectHeaders, summary: jd.summary };
+        }
+        if (dept === 'hifz') {
+            const students = HifzEngine.filterByExamGroup(CALC.hifz.students, groupKey);
+            return { students, subjectHeaders: HIFZ_LABEL_SUBJECTS, summary: RankingEngine.summarize(students) };
+        }
+        if (dept === 'maktab') {
+            const students = MaktabEngine.filterBySubGroup(CALC.maktab.students, groupKey);
+            return { students, subjectHeaders: CALC.maktab.subjectHeaders, summary: RankingEngine.summarize(students) };
+        }
+        return null;
+    }
 
-.rp-table tfoot td { font-weight: 700; background: #f4f7f5; }
+    // ---------------------- ১. ব্যক্তিগত ফলাফল (রোল সার্চ) ----------------------
 
-/* ================= এক নজরে ফলাফল (সম্মিলিত রিপোর্ট) ================= */
+    function renderSearch() {
+        app.innerHTML = backBar('হোম') + `
+        <div class="rp-panel">
+            <h2 class="rp-panel-title">ব্যক্তিগত ফলাফল</h2>
+            <div class="rp-form-row">
+                <div class="rp-form-label">রোল নম্বর</div>
+                <div class="rp-search-row">
+                    <input type="text" id="rpRollInput" class="rp-input" placeholder="রোল নম্বর লিখুন" inputmode="numeric" />
+                    <button class="rp-btn" id="rpRollSearchBtn">অনুসন্ধান করুন</button>
+                </div>
+            </div>
+            <div id="rpSearchResult"></div>
+        </div>`;
+        attachBack();
+        setActiveNav('search');
 
-.rp-glance-title { font-size: 16px; font-weight: 800; text-align: center; color: var(--rp-ink); margin: 22px 0 10px; }
-.rp-division-title {
-    font-size: 14px; font-weight: 700; color: #fff; background: var(--rp-green-dark);
-    padding: 7px 12px; border-radius: 8px 8px 0 0; margin-top: 20px;
-}
-.rp-division-table-wrap { overflow-x: auto; }
-.rp-division-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-.rp-division-table th, .rp-division-table td { border: 1px solid #e5e7eb; padding: 6px 7px; text-align: center; }
-.rp-division-table thead th { background: #eef2f0; color: var(--rp-ink); }
-.rp-division-table td.rp-td-name { text-align: left; white-space: normal; min-width: 120px; }
-.rp-division-table tr.rp-row-total td { font-weight: 800; background: #f4f7f5; }
-/* একদম নিচের সামারী সারিতে নাম/লেবেল কলাম ডান দিকে থাকবে */
-.rp-division-table tr.rp-row-total td.rp-td-name { text-align: right; }
+        const input = document.getElementById('rpRollInput');
+        const doSearch = () => {
+            const rollRaw = (input.value || '').trim();
+            const box = document.getElementById('rpSearchResult');
+            if (!rollRaw) { box.innerHTML = ''; return; }
+            const rollEn = Utils.toEnglishNumber(rollRaw);
+            const found = ALL_STUDENTS.find(s => Utils.toEnglishNumber(String(s.roll)) === rollEn);
+            if (!found) {
+                box.innerHTML = `<div class="rp-empty">এই রোল নম্বরে কোনো ফলাফল পাওয়া যায়নি।</div>`;
+                return;
+            }
+            box.innerHTML = renderPersonalCard(found);
+        };
+        document.getElementById('rpRollSearchBtn').addEventListener('click', doSearch);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    }
 
-.rp-merit-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
-.rp-merit-table th, .rp-merit-table td { border: 1px solid #e5e7eb; padding: 7px 9px; text-align: center; }
-.rp-merit-table thead th { background: var(--rp-green); color: #fff; }
-.rp-merit-table td.rp-td-name { text-align: left; white-space: normal; min-width: 160px; }
-.rp-merit-dept-cell { font-weight: 700; background: #f9fbfa; }
+    function renderPersonalCard(s) {
+        const rows = s.subjectHeaders.map((subj, idx) => {
+            const entry = s.subjects && s.subjects[subj];
+            let val = '-';
+            if (entry) {
+                if (entry.status === 'cancelled') val = 'বাতিল';
+                else if (entry.status === 'suspended') val = 'স্থগিত';
+                else if (entry.status === 'absent') val = 'অনুপস্থিত';
+                else if (entry.value !== null && entry.value !== undefined) val = bn(entry.value);
+            }
+            return `<tr><td>${bn(idx + 1)}</td><td class="rp-td-name">${esc(subj)}</td><td>${val}</td></tr>`;
+        }).join('');
 
-/* ================= চার্ট ================= */
+        const totalRow = (s.total !== null && s.total !== undefined)
+            ? `<tr><td class="rp-foot-label" colspan="2">মোট নম্বর</td><td>${bn(s.total)}</td></tr>` : '';
+        const avgRow = (s.average !== null && s.average !== undefined)
+            ? `<tr><td class="rp-foot-label" colspan="2">গড় নম্বর</td><td>${bn(s.average)}</td></tr>` : '';
+        const gradeRow = `<tr><td class="rp-foot-label" colspan="2">বিভাগ</td><td class="${gradeClass(s.grade)}">${esc(s.grade)}</td></tr>`;
+        const meritLbl = s.merit ? (Utils.meritLabel(s.merit) || bn(s.merit)) : '';
+        const meritRow = s.merit ? `<tr><td class="rp-foot-label" colspan="2">মেধাক্রম</td><td>${esc(meritLbl)}</td></tr>` : '';
 
-.rp-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.rp-chart-wrap canvas { max-width: 100%; }
-.rp-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; font-size: 13px; }
-.legend-item { display: flex; align-items: center; gap: 6px; }
-.legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const sig = cfg.signatures || {};
 
-/* ================= প্রিন্ট ================= */
+        return `
+        <div class="rp-personal-card">
+            ${reportHeadHTML(s.department)}
+            <table class="rp-info-table">
+                <tr>
+                    <td class="rp-info-label">ছাত্রের নাম</td><td class="rp-info-value">${esc(s.name)}</td>
+                    <td class="rp-info-label">রোল নং</td><td class="rp-info-value">${bn(s.roll)}</td>
+                </tr>
+                <tr>
+                    <td class="rp-info-label">পিতার নাম</td><td class="rp-info-value">${esc(s.fatherName || '-')}</td>
+                    <td class="rp-info-label">মারহালা</td><td class="rp-info-value">${esc(s.jamahLabel || '-')}</td>
+                </tr>
+            </table>
+            <table class="rp-subject-table">
+                <thead><tr><th>ক্র.</th><th>বিষয়</th><th>প্রাপ্ত নম্বর</th></tr></thead>
+                <tbody>${rows}</tbody>
+                <tfoot>${totalRow}${avgRow}${gradeRow}${meritRow}</tfoot>
+            </table>
+            ${cfg.note ? `<div class="rp-note">${esc(cfg.note)}</div>` : ''}
+            <div class="rp-sign-row">
+                <div class="rp-sign-block">
+                    <div class="rp-sign-line">${esc(sig.nazeme || 'নাযেমে তালিমাত')}</div>
+                    <div class="rp-sign-date">${dateLabel()}</div>
+                </div>
+                <div class="rp-sign-block">
+                    <div class="rp-sign-line">${esc(sig.muhtamim || 'মুহতামিমে জামিয়া')}</div>
+                    <div class="rp-sign-date">${dateLabel()}</div>
+                </div>
+            </div>
+            ${printButtonHTML()}
+        </div>`;
+    }
 
-@media print {
-    .rp-topbar, .rp-backbar, .rp-print-btn, #rpStatus, .rp-page-header { display: none !important; }
-    body { background: #fff; }
-    .rp-wrap { max-width: 100%; margin: 0; padding: 0; }
-    .rp-panel { box-shadow: none; padding: 0; border-radius: 0; }
-    .rp-personal-card { border: none; padding: 0; }
-}
+    // ---------------------- ২. জামাত/গ্রুপ-ভিত্তিক ফলাফল ----------------------
+
+    function renderJamahDeptPicker() {
+        app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
+        attachBack();
+        setActiveNav('jamah');
+        bindDeptPicker(dept => renderJamahGroupPicker(dept));
+    }
+
+    function renderJamahGroupPicker(dept) {
+        const groups = groupsOf(dept);
+        app.innerHTML = backBar(deptLabel(dept)) + `
+        <h2 class="rp-panel-title">${esc(deptLabel(dept))} — জামাত/গ্রুপ নির্বাচন করুন</h2>
+        <div class="rp-group-grid">
+            ${groups.map(g => `<button class="rp-group-btn" data-key="${esc(g.key)}">${esc(g.label)}</button>`).join('')}
+        </div>`;
+        const backBtn = document.getElementById('rpBack');
+        backBtn.addEventListener('click', renderJamahDeptPicker);
+        app.querySelectorAll('.rp-group-btn').forEach(btn => {
+            btn.addEventListener('click', () => renderJamahTable(dept, btn.dataset.key));
+        });
+    }
+
+    function renderJamahTable(dept, groupKey) {
+        const data = getStudentsAndSubjects(dept, groupKey);
+        if (!data) {
+            app.innerHTML = backBar(deptLabel(dept)) + `<div class="rp-empty">তথ্য পাওয়া যায়নি।</div>`;
+            document.getElementById('rpBack').addEventListener('click', () => renderJamahGroupPicker(dept));
+            return;
+        }
+
+        const subjectHeaders = data.subjectHeaders;
+        const head = `<tr><th>ক্র.</th><th>নাম</th><th>রোল</th>${subjectHeaders.map(s => `<th class="rp-vert-th">${esc(s)}</th>`).join('')}<th>মোট</th><th>গড়</th><th>বিভাগ</th><th>মেধা</th></tr>`;
+
+        const rows = data.students.map(s => {
+            const marks = subjectHeaders.map(subj => {
+                const entry = s.subjects && s.subjects[subj];
+                if (!entry) return '<td>-</td>';
+                if (entry.status === 'cancelled') return '<td>বা.</td>';
+                if (entry.status === 'suspended') return '<td>স্থ.</td>';
+                if (entry.status === 'absent') return '<td>অনু.</td>';
+                return `<td>${entry.value !== null && entry.value !== undefined ? bn(entry.value) : '-'}</td>`;
+            }).join('');
+            return `<tr>
+                <td>${bn(s.serial)}</td>
+                <td class="rp-td-name">${esc(s.name)}</td>
+                <td>${bn(s.roll)}</td>
+                ${marks}
+                <td>${s.total !== null && s.total !== undefined ? bn(s.total) : '-'}</td>
+                <td>${s.average !== null && s.average !== undefined ? bn(s.average) : '-'}</td>
+                <td class="${gradeClass(s.grade)}">${esc(s.grade)}</td>
+                <td>${s.merit ? bn(s.merit) : '-'}</td>
+            </tr>`;
+        }).join('');
+
+        const sm = data.summary;
+        const total = sm.totalStudents || 0;
+        const pct = (n) => total > 0 ? ((n / total) * 100).toFixed(0) : '0';
+        const summaryBox = `<div class="rp-jamah-summary-box">
+            <div><span>মোট ছাত্র</span><b>${bn(total)}</b></div>
+            <div><span>মুমতাজ</span><b>${bn(pct(sm.মুমতাজ || 0))}%</b></div>
+            <div><span>জায়্যিদ জিদ্দান</span><b>${bn(pct(sm.জায়্যিদজিদ্দান || 0))}%</b></div>
+            <div><span>জায়্যিদ</span><b>${bn(pct(sm.জায়্যিদ || 0))}%</b></div>
+            <div><span>মাকবুল</span><b>${bn(pct(sm.মাকবুল || 0))}%</b></div>
+            <div><span>পাসের হার</span><b>${bn(sm.passRate)}%</b></div>
+        </div>`;
+
+        app.innerHTML = backBar(deptLabel(dept)) + `
+        <div class="rp-panel">
+            ${reportHeadHTML(`${deptLabel(dept)} — মারহালা: ${groupKey}`)}
+            <div style="text-align:center;">${summaryBox}</div>
+            <div class="rp-table-wrap">
+                <table class="rp-table">
+                    <thead>${head}</thead>
+                    <tbody>${rows || '<tr><td colspan="99">কোনো ছাত্র পাওয়া যায়নি।</td></tr>'}</tbody>
+                </table>
+            </div>
+            ${printButtonHTML()}
+        </div>`;
+        document.getElementById('rpBack').addEventListener('click', () => renderJamahGroupPicker(dept));
+    }
+
+    // ---------------------- ৩. এক নজরে ফলাফল (সম্মিলিত রিপোর্ট) ----------------------
+
+    function buildDivisionRows(dept) {
+        const groups = groupsOf(dept);
+        const rows = groups.map(g => {
+            const data = getStudentsAndSubjects(dept, g.key);
+            return { label: g.label, summary: data ? data.summary : null };
+        }).filter(r => r.summary);
+        const combined = RankingEngine.combineSummaries(rows.map(r => r.summary));
+        return { rows, combined };
+    }
+
+    function divisionTableHTML(title, divRows, combinedLabel) {
+        const cols = ['মুমতাজ', 'জায়্যিদজিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপস্থিত', 'স্থগিত', 'বাতিল'];
+        const colLabels = ['মুমতাজ', 'জা. জিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপ.', 'স্থ.', 'বা.'];
+
+        const bodyRows = divRows.rows.map(r => `<tr>
+            <td class="rp-td-name">${esc(r.label)}</td>
+            <td>${bn(r.summary.totalStudents)}</td>
+            <td>${bn(r.summary.pass)}</td>
+            ${cols.map(c => `<td>${bn(r.summary[c] || 0)}</td>`).join('')}
+            <td>${bn(r.summary.passRate)}%</td>
+        </tr>`).join('');
+
+        const totalRow = `<tr class="rp-row-total">
+            <td class="rp-td-name">${esc(combinedLabel || 'সম্মিলিত')}</td>
+            <td>${bn(divRows.combined.totalStudents)}</td>
+            <td>${bn(divRows.combined.pass)}</td>
+            ${cols.map(c => `<td>${bn(divRows.combined[c] || 0)}</td>`).join('')}
+            <td>${bn(divRows.combined.passRate)}%</td>
+        </tr>`;
+
+        return `
+        <div class="rp-division-title">${esc(title)}</div>
+        <div class="rp-division-table-wrap">
+            <table class="rp-division-table">
+                <thead><tr><th>জামাত/গ্রুপ</th><th>ছাত্র</th><th>পাশ</th>${colLabels.map(c => `<th class="rp-vert-th">${esc(c)}</th>`).join('')}<th>পাসের হার</th></tr></thead>
+                <tbody>${bodyRows}${totalRow}</tbody>
+            </table>
+        </div>`;
+    }
+
+    function combinedMeritTableHTML() {
+        const kitabAll = [];
+        CONSTANTS.KITAB_JAMAH_ORDER.forEach(j => { if (CALC.kitab[j]) kitabAll.push(...CALC.kitab[j].students); });
+        const maktabAll = CALC.maktab ? CALC.maktab.students : [];
+        const hifzAll = CALC.hifz ? CALC.hifz.students : [];
+
+        const kitabTop = RankingEngine.getCombinedTopMerit(kitabAll, 'average', 3);
+        const maktabTop = RankingEngine.getCombinedTopMerit(maktabAll, 'average', 3);
+        const hifzTop = RankingEngine.getCombinedTopMeritByGrade(hifzAll, 'total', 3);
+
+        function rowsFor(list, deptLabelText, jamahKeyFn, scoreKey) {
+            if (!list.length) return `<tr><td class="rp-merit-dept-cell">${esc(deptLabelText)}</td><td colspan="4" class="rp-empty">নেই</td></tr>`;
+            return list.map((m, idx) => `<tr>
+                ${idx === 0 ? `<td class="rp-merit-dept-cell" rowspan="${list.length}">${esc(deptLabelText)}</td>` : ''}
+                <td>${Utils.meritLabel(m.merit) || bn(m.merit)}</td>
+                <td class="rp-td-name">${esc(m.name)}${m.fatherName ? ' বিন ' + esc(m.fatherName) : ''}</td>
+                <td>${esc(jamahKeyFn(m))}</td>
+                <td>${bn(m[scoreKey])}</td>
+            </tr>`).join('');
+        }
+
+        const body = rowsFor(kitabTop, 'কিতাব বিভাগ', m => m.jamah || '', 'average')
+            + rowsFor(maktabTop, 'মকতব বিভাগ', m => m.group || m.class || '', 'average')
+            + rowsFor(hifzTop, 'হিফজ বিভাগ', m => m.examGroup || '', 'total');
+
+        return `
+        <div class="rp-division-title">সম্মিলিত মেধা তালিকা</div>
+        <div class="rp-division-table-wrap">
+            <table class="rp-merit-table">
+                <thead><tr><th>বিভাগ</th><th>মেধা</th><th>নাম</th><th>জামাত/গ্রুপ</th><th>গড়/মোট</th></tr></thead>
+                <tbody>${body}</tbody>
+            </table>
+        </div>`;
+    }
+
+    function renderGlanceReport() {
+        const kitab = buildDivisionRows('kitab');
+        const hifz = buildDivisionRows('hifz');
+        const maktab = buildDivisionRows('maktab');
+        const grand = RankingEngine.combineSummaries([kitab.combined, hifz.combined, maktab.combined]);
+
+        const overviewRows = {
+            rows: [
+                { label: 'কিতাব বিভাগ', summary: kitab.combined },
+                { label: 'হিফজ বিভাগ', summary: hifz.combined },
+                { label: 'মকতব বিভাগ', summary: maktab.combined }
+            ],
+            combined: grand
+        };
+
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+
+        app.innerHTML = backBar('হোম') + `
+        <div class="rp-panel">
+            ${reportHeadHTML()}
+            <div class="rp-glance-title">এক নজরে ${esc(cfg.examName || '')} - এর ফলাফল</div>
+            ${divisionTableHTML('কিতাব বিভাগ', kitab, 'সম্মিলিত কিতাব')}
+            ${divisionTableHTML('হিফজ বিভাগ', hifz, 'সম্মিলিত হিফজ')}
+            ${divisionTableHTML('মকতব বিভাগ', maktab, 'সম্মিলিত মকতব')}
+            ${divisionTableHTML('সম্মিলিত ফলাফল', overviewRows, 'সম্মিলিত')}
+            ${combinedMeritTableHTML()}
+            ${printButtonHTML()}
+        </div>`;
+        document.getElementById('rpBack').addEventListener('click', renderHome);
+        setActiveNav('glance');
+    }
+
+    // ---------------------- ৪. পাইচার্ট ----------------------
+
+    function renderChartDeptPicker() {
+        app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
+        attachBack();
+        setActiveNav('chart');
+        bindDeptPicker(dept => renderChartGroupPicker(dept));
+    }
+
+    function renderChartGroupPicker(dept) {
+        const groups = groupsOf(dept);
+        app.innerHTML = backBar(deptLabel(dept)) + `
+        <h2 class="rp-panel-title">${esc(deptLabel(dept))} — জামাত/গ্রুপ নির্বাচন করুন</h2>
+        <div class="rp-group-grid">
+            <button class="rp-group-btn rp-group-btn-all" data-key="__all__">সম্মিলিত (সব ${esc(dept === 'kitab' ? 'জামাত' : 'গ্রুপ')})</button>
+            ${groups.map(g => `<button class="rp-group-btn" data-key="${esc(g.key)}">${esc(g.label)}</button>`).join('')}
+        </div>`;
+        document.getElementById('rpBack').addEventListener('click', renderChartDeptPicker);
+        app.querySelectorAll('.rp-group-btn').forEach(btn => {
+            btn.addEventListener('click', () => renderChart(dept, btn.dataset.key));
+        });
+    }
+
+    function renderChart(dept, groupKey) {
+        let students, title;
+        if (groupKey === '__all__') {
+            if (dept === 'kitab') {
+                students = [];
+                CONSTANTS.KITAB_JAMAH_ORDER.forEach(j => { if (CALC.kitab[j]) students.push(...CALC.kitab[j].students); });
+            } else if (dept === 'hifz') {
+                students = CALC.hifz.students;
+            } else {
+                students = CALC.maktab.students;
+            }
+            title = `${deptLabel(dept)} — সম্মিলিত ফলাফল`;
+        } else {
+            const data = getStudentsAndSubjects(dept, groupKey);
+            students = data ? data.students : [];
+            title = `${deptLabel(dept)} — ${groupKey}`;
+        }
+
+        const summary = RankingEngine.summarize(students);
+        const chartData = ChartEngine.summaryToChartData(summary);
+
+        app.innerHTML = backBar(deptLabel(dept)) + `
+        <div class="rp-panel">
+            ${reportHeadHTML(title)}
+            <div class="rp-chart-wrap">
+                <canvas id="rpChartCanvas" width="320" height="320"></canvas>
+                <div id="rpChartLegend" class="rp-legend"></div>
+            </div>
+            ${printButtonHTML()}
+        </div>`;
+        document.getElementById('rpBack').addEventListener('click', () => renderChartGroupPicker(dept));
+
+        const canvas = document.getElementById('rpChartCanvas');
+        ChartEngine.renderPieChart(canvas, chartData, { passRate: summary.passRate });
+        ChartEngine.renderLegend(document.getElementById('rpChartLegend'), chartData);
+    }
+
+    // ---------------------- Router ----------------------
+
+    function go(view) {
+        loadData().then(() => {
+            if (view === 'search') renderSearch();
+            else if (view === 'jamah') renderJamahDeptPicker();
+            else if (view === 'glance') renderGlanceReport();
+            else if (view === 'chart') renderChartDeptPicker();
+            else renderHome();
+        }).catch(() => { /* setStatus ইতিমধ্যে এরর দেখাচ্ছে */ });
+    }
+
+    // ---------------------- শুরু ----------------------
+
+    initBrand();
+    attachTopNav();
+    renderHome();
+    loadData().catch(() => { /* হোমপেইজেই এরর বার্তা থাকবে statusBox-এ */ });
+})();
