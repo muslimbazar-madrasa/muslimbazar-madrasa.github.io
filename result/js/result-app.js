@@ -7,8 +7,9 @@
  * চারটি ভিউ দেখায়: ব্যক্তিগত ফলাফল, জামাত/গ্রুপ-ভিত্তিক ফলাফল,
  * এক নজরে ফলাফল, পাইচার্ট।
  *
- * ডেটা আপডেট করতে শুধু data/result-data.xlsx ফাইল বদলে দিলেই হবে -
- * কোনো কোড পরিবর্তনের দরকার নেই।
+ * ব্র্যান্ডিং/মাদরাসার নাম-ঠিকানা/পরীক্ষার নাম বদলাতে হলে site-config.js
+ * ফাইল দেখুন। ডেটা আপডেট করতে শুধু data/result-data.xlsx ফাইল বদলে
+ * দিলেই হবে - কোনো কোড পরিবর্তনের দরকার নেই।
  * ------------------------------------------------------------
  */
 
@@ -65,7 +66,7 @@
                 jd.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'কিতাব বিভাগ', jamahLabel: jamah, subjectHeaders: jd.subjectHeaders }));
             });
             if (CALC.hifz) {
-                CALC.hifz.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'হিফজ বিভাগ', jamahLabel: (s.examGroup || '') , subjectHeaders: HIFZ_LABEL_SUBJECTS }));
+                CALC.hifz.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'হিফজ বিভাগ', jamahLabel: (s.examGroup || ''), subjectHeaders: HIFZ_LABEL_SUBJECTS }));
             }
             if (CALC.maktab) {
                 CALC.maktab.students.forEach(s => ALL_STUDENTS.push({ ...s, department: 'মকতব বিভাগ', jamahLabel: (s.group || s.class || ''), subjectHeaders: CALC.maktab.subjectHeaders }));
@@ -91,7 +92,56 @@
         return 'rp-grade-pass';
     }
 
-    function h(html) { const d = document.createElement('div'); d.innerHTML = html; return d.firstElementChild; }
+    function dateLabel() {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        return cfg.publishDate ? `তারিখ: ${Utils.formatDateBangla(cfg.publishDate)}` : '';
+    }
+
+    // মাদরাসার নাম/ঠিকানা/লোগো/পরীক্ষার নাম সহ প্রতিটি রিপোর্টের উপরের অংশ
+    function reportHeadHTML(subtitle) {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const logoHtml = cfg.logo
+            ? `<img src="${esc(cfg.logo)}" class="rp-report-logo" onerror="this.style.display='none'" alt="logo" />`
+            : '';
+        return `
+        <div class="rp-report-head">
+            ${logoHtml}
+            <h2 class="rp-report-name">${esc(cfg.madrasaName || '')}</h2>
+            <div class="rp-report-addr">${esc(cfg.address || '')}</div>
+            <div class="rp-report-exam">${esc(cfg.examName || '')}</div>
+            ${subtitle ? `<div class="rp-report-subtitle">${esc(subtitle)}</div>` : ''}
+        </div>`;
+    }
+
+    function printButtonHTML() {
+        return `<div style="text-align:center;margin-top:20px;">
+            <button class="rp-print-btn" onclick="window.print()">🖨️ প্রিন্ট করুন</button>
+        </div>`;
+    }
+
+    // ---------------------- টপ নেভিগেশন ----------------------
+
+    function initBrand() {
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const nameEl = document.getElementById('rpBrandName');
+        const addrEl = document.getElementById('rpBrandAddr');
+        const logoEl = document.getElementById('rpBrandLogo');
+        if (nameEl) nameEl.textContent = cfg.madrasaName || '';
+        if (addrEl) addrEl.textContent = cfg.address || '';
+        if (logoEl && cfg.logo) logoEl.src = cfg.logo;
+    }
+
+    function attachTopNav() {
+        document.querySelectorAll('.rp-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => go(btn.dataset.view));
+        });
+    }
+
+    function setActiveNav(view) {
+        document.querySelectorAll('.rp-nav-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
+    }
 
     // ---------------------- নেভিগেশন / ভিউ কাঠামো ----------------------
 
@@ -122,6 +172,7 @@
         app.querySelectorAll('[data-view]').forEach(btn => {
             btn.addEventListener('click', () => go(btn.dataset.view));
         });
+        setActiveNav('home');
     }
 
     function backBar(label) {
@@ -133,7 +184,7 @@
         if (b) b.addEventListener('click', renderHome);
     }
 
-    function departmentPicker(onPick) {
+    function departmentPicker() {
         return `
         <div class="rp-dept-grid">
             <button class="rp-dept-btn" data-dept="kitab">কিতাব বিভাগ</button>
@@ -189,13 +240,17 @@
         app.innerHTML = backBar('হোম') + `
         <div class="rp-panel">
             <h2 class="rp-panel-title">ব্যক্তিগত ফলাফল</h2>
-            <div class="rp-search-row">
-                <input type="text" id="rpRollInput" class="rp-input" placeholder="রোল নম্বর লিখুন" inputmode="numeric" />
-                <button class="rp-btn" id="rpRollSearchBtn">খুঁজুন</button>
+            <div class="rp-form-row">
+                <div class="rp-form-label">রোল নম্বর</div>
+                <div class="rp-search-row">
+                    <input type="text" id="rpRollInput" class="rp-input" placeholder="রোল নম্বর লিখুন" inputmode="numeric" />
+                    <button class="rp-btn" id="rpRollSearchBtn">অনুসন্ধান করুন</button>
+                </div>
             </div>
             <div id="rpSearchResult"></div>
         </div>`;
         attachBack();
+        setActiveNav('search');
 
         const input = document.getElementById('rpRollInput');
         const doSearch = () => {
@@ -215,7 +270,7 @@
     }
 
     function renderPersonalCard(s) {
-        const rows = s.subjectHeaders.map(subj => {
+        const rows = s.subjectHeaders.map((subj, idx) => {
             const entry = s.subjects && s.subjects[subj];
             let val = '-';
             if (entry) {
@@ -224,33 +279,50 @@
                 else if (entry.status === 'absent') val = 'অনুপস্থিত';
                 else if (entry.value !== null && entry.value !== undefined) val = bn(entry.value);
             }
-            return `<tr><td>${esc(subj)}</td><td>${val}</td></tr>`;
+            return `<tr><td>${bn(idx + 1)}</td><td class="rp-td-name">${esc(subj)}</td><td>${val}</td></tr>`;
         }).join('');
 
         const totalRow = (s.total !== null && s.total !== undefined)
-            ? `<div class="rp-stat"><span>মোট নম্বর</span><b>${bn(s.total)}</b></div>` : '';
+            ? `<tr><td class="rp-foot-label" colspan="2">মোট নম্বর</td><td>${bn(s.total)}</td></tr>` : '';
         const avgRow = (s.average !== null && s.average !== undefined)
-            ? `<div class="rp-stat"><span>গড় নম্বর</span><b>${bn(s.average)}</b></div>` : '';
-        const meritRow = s.merit ? `<div class="rp-stat"><span>মেধাক্রম</span><b>${bn(s.merit)}</b></div>` : '';
+            ? `<tr><td class="rp-foot-label" colspan="2">গড় নম্বর</td><td>${bn(s.average)}</td></tr>` : '';
+        const gradeRow = `<tr><td class="rp-foot-label" colspan="2">বিভাগ</td><td class="${gradeClass(s.grade)}">${esc(s.grade)}</td></tr>`;
+        const meritLbl = s.merit ? (Utils.meritLabel(s.merit) || bn(s.merit)) : '';
+        const meritRow = s.merit ? `<tr><td class="rp-foot-label" colspan="2">মেধাক্রম</td><td>${esc(meritLbl)}</td></tr>` : '';
+
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+        const sig = cfg.signatures || {};
 
         return `
         <div class="rp-personal-card">
-            <div class="rp-personal-head">
-                <div class="rp-personal-name">${esc(s.name)}</div>
-                <div class="rp-personal-sub">${esc(s.department)} — ${esc(s.jamahLabel)}</div>
-            </div>
-            <div class="rp-personal-info">
-                <div>পিতার নাম: ${esc(s.fatherName || '-')}</div>
-                <div>রোল: ${bn(s.roll)}</div>
-            </div>
-            <table class="rp-table rp-table-sm">
-                <thead><tr><th>বিষয়</th><th>নম্বর</th></tr></thead>
-                <tbody>${rows}</tbody>
+            ${reportHeadHTML(s.department)}
+            <table class="rp-info-table">
+                <tr>
+                    <td class="rp-info-label">ছাত্রের নাম</td><td class="rp-info-value">${esc(s.name)}</td>
+                    <td class="rp-info-label">রোল নং</td><td class="rp-info-value">${bn(s.roll)}</td>
+                </tr>
+                <tr>
+                    <td class="rp-info-label">পিতার নাম</td><td class="rp-info-value">${esc(s.fatherName || '-')}</td>
+                    <td class="rp-info-label">মারহালা</td><td class="rp-info-value">${esc(s.jamahLabel || '-')}</td>
+                </tr>
             </table>
-            <div class="rp-stats-row">
-                ${totalRow}${avgRow}${meritRow}
-                <div class="rp-stat"><span>বিভাগ</span><b class="${gradeClass(s.grade)}">${esc(s.grade)}</b></div>
+            <table class="rp-subject-table">
+                <thead><tr><th>ক্র.</th><th>বিষয়</th><th>প্রাপ্ত নম্বর</th></tr></thead>
+                <tbody>${rows}</tbody>
+                <tfoot>${totalRow}${avgRow}${gradeRow}${meritRow}</tfoot>
+            </table>
+            ${cfg.note ? `<div class="rp-note">${esc(cfg.note)}</div>` : ''}
+            <div class="rp-sign-row">
+                <div class="rp-sign-block">
+                    <div class="rp-sign-line">${esc(sig.nazeme || 'নাযেমে তালিমাত')}</div>
+                    <div class="rp-sign-date">${dateLabel()}</div>
+                </div>
+                <div class="rp-sign-block">
+                    <div class="rp-sign-line">${esc(sig.muhtamim || 'মুহতামিমে জামিয়া')}</div>
+                    <div class="rp-sign-date">${dateLabel()}</div>
+                </div>
             </div>
+            ${printButtonHTML()}
         </div>`;
     }
 
@@ -259,6 +331,7 @@
     function renderJamahDeptPicker() {
         app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
         attachBack();
+        setActiveNav('jamah');
         bindDeptPicker(dept => renderJamahGroupPicker(dept));
     }
 
@@ -278,10 +351,14 @@
 
     function renderJamahTable(dept, groupKey) {
         const data = getStudentsAndSubjects(dept, groupKey);
-        if (!data) { app.innerHTML = `<div class="rp-empty">তথ্য পাওয়া যায়নি।</div>`; return; }
+        if (!data) {
+            app.innerHTML = backBar(deptLabel(dept)) + `<div class="rp-empty">তথ্য পাওয়া যায়নি।</div>`;
+            document.getElementById('rpBack').addEventListener('click', () => renderJamahGroupPicker(dept));
+            return;
+        }
 
         const subjectHeaders = data.subjectHeaders;
-        const head = `<tr><th>ক্র.</th><th>নাম</th><th>রোল</th>${subjectHeaders.map(s => `<th>${esc(s)}</th>`).join('')}<th>মোট</th><th>গড়</th><th>বিভাগ</th><th>মেধা</th></tr>`;
+        const head = `<tr><th>ক্র.</th><th>নাম</th><th>রোল</th>${subjectHeaders.map(s => `<th class="rp-vert-th">${esc(s)}</th>`).join('')}<th>মোট</th><th>গড়</th><th>বিভাগ</th><th>মেধা</th></tr>`;
 
         const rows = data.students.map(s => {
             const marks = subjectHeaders.map(subj => {
@@ -304,51 +381,140 @@
             </tr>`;
         }).join('');
 
+        const sm = data.summary;
+        const total = sm.totalStudents || 0;
+        const pct = (n) => total > 0 ? ((n / total) * 100).toFixed(0) : '0';
+        const summaryBox = `<div class="rp-jamah-summary-box">
+            <div><span>মোট ছাত্র</span><b>${bn(total)}</b></div>
+            <div><span>মুমতাজ</span><b>${bn(pct(sm.মুমতাজ || 0))}%</b></div>
+            <div><span>জায়্যিদ জিদ্দান</span><b>${bn(pct(sm.জায়্যিদজিদ্দান || 0))}%</b></div>
+            <div><span>জায়্যিদ</span><b>${bn(pct(sm.জায়্যিদ || 0))}%</b></div>
+            <div><span>মাকবুল</span><b>${bn(pct(sm.মাকবুল || 0))}%</b></div>
+            <div><span>পাসের হার</span><b>${bn(sm.passRate)}%</b></div>
+        </div>`;
+
         app.innerHTML = backBar(deptLabel(dept)) + `
-        <h2 class="rp-panel-title">${esc(deptLabel(dept))} — ${esc(groupKey)}</h2>
-        <div class="rp-table-wrap">
-            <table class="rp-table">
-                <thead>${head}</thead>
-                <tbody>${rows || '<tr><td colspan="99">কোনো ছাত্র পাওয়া যায়নি।</td></tr>'}</tbody>
-            </table>
+        <div class="rp-panel">
+            ${reportHeadHTML(`${deptLabel(dept)} — মারহালা: ${groupKey}`)}
+            <div style="text-align:center;">${summaryBox}</div>
+            <div class="rp-table-wrap">
+                <table class="rp-table">
+                    <thead>${head}</thead>
+                    <tbody>${rows || '<tr><td colspan="99">কোনো ছাত্র পাওয়া যায়নি।</td></tr>'}</tbody>
+                </table>
+            </div>
+            ${printButtonHTML()}
         </div>`;
         document.getElementById('rpBack').addEventListener('click', () => renderJamahGroupPicker(dept));
     }
 
-    // ---------------------- ৩. এক নজরে ফলাফল ----------------------
+    // ---------------------- ৩. এক নজরে ফলাফল (সম্মিলিত রিপোর্ট) ----------------------
 
-    function renderGlanceDeptPicker() {
-        app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
-        attachBack();
-        bindDeptPicker(dept => renderGlanceTable(dept));
-    }
-
-    function renderGlanceTable(dept) {
+    function buildDivisionRows(dept) {
         const groups = groupsOf(dept);
-        const cols = ['মুমতাজ', 'জায়্যিদজিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপস্থিত', 'স্থগিত', 'বাতিল'];
-        const colLabels = ['মুমতাজ', 'জায়্যিদ জিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপস্থিত', 'স্থগিত', 'বাতিল'];
-
         const rows = groups.map(g => {
             const data = getStudentsAndSubjects(dept, g.key);
-            const s = data ? data.summary : null;
-            if (!s) return '';
-            return `<tr>
-                <td class="rp-td-name">${esc(g.label)}</td>
-                <td>${bn(s.totalStudents)}</td>
-                ${cols.map(c => `<td>${bn(s[c] || 0)}</td>`).join('')}
-                <td>${bn(s.passRate)}%</td>
-            </tr>`;
-        }).join('');
+            return { label: g.label, summary: data ? data.summary : null };
+        }).filter(r => r.summary);
+        const combined = RankingEngine.combineSummaries(rows.map(r => r.summary));
+        return { rows, combined };
+    }
 
-        app.innerHTML = backBar('হোম') + `
-        <h2 class="rp-panel-title">${esc(deptLabel(dept))} — এক নজরে ফলাফল</h2>
-        <div class="rp-table-wrap">
-            <table class="rp-table">
-                <thead><tr><th>জামাত/গ্রুপ</th><th>মোট ছাত্র</th>${colLabels.map(c => `<th>${esc(c)}</th>`).join('')}<th>পাসের হার</th></tr></thead>
-                <tbody>${rows}</tbody>
+    function divisionTableHTML(title, divRows, combinedLabel) {
+        const cols = ['মুমতাজ', 'জায়্যিদজিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপস্থিত', 'স্থগিত', 'বাতিল'];
+        const colLabels = ['মুমতাজ', 'জা. জিদ্দান', 'জায়্যিদ', 'মাকবুল', 'রাসিব', 'অনুপ.', 'স্থ.', 'বা.'];
+
+        const bodyRows = divRows.rows.map(r => `<tr>
+            <td class="rp-td-name">${esc(r.label)}</td>
+            <td>${bn(r.summary.totalStudents)}</td>
+            <td>${bn(r.summary.pass)}</td>
+            ${cols.map(c => `<td>${bn(r.summary[c] || 0)}</td>`).join('')}
+            <td>${bn(r.summary.passRate)}%</td>
+        </tr>`).join('');
+
+        const totalRow = `<tr class="rp-row-total">
+            <td class="rp-td-name">${esc(combinedLabel || 'সম্মিলিত')}</td>
+            <td>${bn(divRows.combined.totalStudents)}</td>
+            <td>${bn(divRows.combined.pass)}</td>
+            ${cols.map(c => `<td>${bn(divRows.combined[c] || 0)}</td>`).join('')}
+            <td>${bn(divRows.combined.passRate)}%</td>
+        </tr>`;
+
+        return `
+        <div class="rp-division-title">${esc(title)}</div>
+        <div class="rp-division-table-wrap">
+            <table class="rp-division-table">
+                <thead><tr><th>জামাত/গ্রুপ</th><th>ছাত্র</th><th>পাশ</th>${colLabels.map(c => `<th>${esc(c)}</th>`).join('')}<th>পাসের হার</th></tr></thead>
+                <tbody>${bodyRows}${totalRow}</tbody>
             </table>
         </div>`;
-        document.getElementById('rpBack').addEventListener('click', renderGlanceDeptPicker);
+    }
+
+    function combinedMeritTableHTML() {
+        const kitabAll = [];
+        CONSTANTS.KITAB_JAMAH_ORDER.forEach(j => { if (CALC.kitab[j]) kitabAll.push(...CALC.kitab[j].students); });
+        const maktabAll = CALC.maktab ? CALC.maktab.students : [];
+        const hifzAll = CALC.hifz ? CALC.hifz.students : [];
+
+        const kitabTop = RankingEngine.getCombinedTopMerit(kitabAll, 'average', 3);
+        const maktabTop = RankingEngine.getCombinedTopMerit(maktabAll, 'average', 3);
+        const hifzTop = RankingEngine.getCombinedTopMeritByGrade(hifzAll, 'total', 3);
+
+        function rowsFor(list, deptLabelText, jamahKeyFn, scoreKey) {
+            if (!list.length) return `<tr><td class="rp-merit-dept-cell">${esc(deptLabelText)}</td><td colspan="4" class="rp-empty">নেই</td></tr>`;
+            return list.map((m, idx) => `<tr>
+                ${idx === 0 ? `<td class="rp-merit-dept-cell" rowspan="${list.length}">${esc(deptLabelText)}</td>` : ''}
+                <td>${Utils.meritLabel(m.merit) || bn(m.merit)}</td>
+                <td class="rp-td-name">${esc(m.name)}${m.fatherName ? ' বিন ' + esc(m.fatherName) : ''}</td>
+                <td>${esc(jamahKeyFn(m))}</td>
+                <td>${bn(m[scoreKey])}</td>
+            </tr>`).join('');
+        }
+
+        const body = rowsFor(kitabTop, 'কিতাব বিভাগ', m => m.jamah || '', 'average')
+            + rowsFor(maktabTop, 'মকতব বিভাগ', m => m.group || m.class || '', 'average')
+            + rowsFor(hifzTop, 'হিফজ বিভাগ', m => m.examGroup || '', 'total');
+
+        return `
+        <div class="rp-division-title">সম্মিলিত মেধা তালিকা</div>
+        <div class="rp-division-table-wrap">
+            <table class="rp-merit-table">
+                <thead><tr><th>বিভাগ</th><th>মেধা</th><th>নাম</th><th>জামাত/গ্রুপ</th><th>গড়/মোট</th></tr></thead>
+                <tbody>${body}</tbody>
+            </table>
+        </div>`;
+    }
+
+    function renderGlanceReport() {
+        const kitab = buildDivisionRows('kitab');
+        const hifz = buildDivisionRows('hifz');
+        const maktab = buildDivisionRows('maktab');
+        const grand = RankingEngine.combineSummaries([kitab.combined, hifz.combined, maktab.combined]);
+
+        const overviewRows = {
+            rows: [
+                { label: 'কিতাব বিভাগ', summary: kitab.combined },
+                { label: 'হিফজ বিভাগ', summary: hifz.combined },
+                { label: 'মকতব বিভাগ', summary: maktab.combined }
+            ],
+            combined: grand
+        };
+
+        const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+
+        app.innerHTML = backBar('হোম') + `
+        <div class="rp-panel">
+            ${reportHeadHTML()}
+            <div class="rp-glance-title">এক নজরে ${esc(cfg.examName || '')} - এর ফলাফল</div>
+            ${divisionTableHTML('কিতাব বিভাগ', kitab, 'সম্মিলিত কিতাব')}
+            ${divisionTableHTML('হিফজ বিভাগ', hifz, 'সম্মিলিত হিফজ')}
+            ${divisionTableHTML('মকতব বিভাগ', maktab, 'সম্মিলিত মকতব')}
+            ${divisionTableHTML('সম্মিলিত ফলাফল', overviewRows, 'সম্মিলিত')}
+            ${combinedMeritTableHTML()}
+            ${printButtonHTML()}
+        </div>`;
+        document.getElementById('rpBack').addEventListener('click', renderHome);
+        setActiveNav('glance');
     }
 
     // ---------------------- ৪. পাইচার্ট ----------------------
@@ -356,6 +522,7 @@
     function renderChartDeptPicker() {
         app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
         attachBack();
+        setActiveNav('chart');
         bindDeptPicker(dept => renderChartGroupPicker(dept));
     }
 
@@ -395,10 +562,13 @@
         const chartData = ChartEngine.summaryToChartData(summary);
 
         app.innerHTML = backBar(deptLabel(dept)) + `
-        <h2 class="rp-panel-title">${esc(title)}</h2>
-        <div class="rp-chart-wrap">
-            <canvas id="rpChartCanvas" width="320" height="320"></canvas>
-            <div id="rpChartLegend" class="rp-legend"></div>
+        <div class="rp-panel">
+            ${reportHeadHTML(title)}
+            <div class="rp-chart-wrap">
+                <canvas id="rpChartCanvas" width="320" height="320"></canvas>
+                <div id="rpChartLegend" class="rp-legend"></div>
+            </div>
+            ${printButtonHTML()}
         </div>`;
         document.getElementById('rpBack').addEventListener('click', () => renderChartGroupPicker(dept));
 
@@ -413,7 +583,7 @@
         loadData().then(() => {
             if (view === 'search') renderSearch();
             else if (view === 'jamah') renderJamahDeptPicker();
-            else if (view === 'glance') renderGlanceDeptPicker();
+            else if (view === 'glance') renderGlanceReport();
             else if (view === 'chart') renderChartDeptPicker();
             else renderHome();
         }).catch(() => { /* setStatus ইতিমধ্যে এরর দেখাচ্ছে */ });
@@ -421,6 +591,8 @@
 
     // ---------------------- শুরু ----------------------
 
+    initBrand();
+    attachTopNav();
     renderHome();
     loadData().catch(() => { /* হোমপেইজেই এরর বার্তা থাকবে statusBox-এ */ });
 })();
