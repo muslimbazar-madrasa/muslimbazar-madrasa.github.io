@@ -14,41 +14,27 @@
   gtag('config', 'G-WXWEDQ6C8T');
 </script>
 
-<!-- বেস স্টাইল (হোম পেজের style.css যদি লোড করা সম্ভব না হয় সেজন্য নিজস্ব ফলব্যাক) -->
-<style>
-    * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        font-family: 'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif;
-        background: #f2f5f4;
-        color: #1f2a44;
-    }
-    .rp-page-header {
-        background: linear-gradient(135deg, #0f6e4f, #16a34a);
-        color: #fff;
-        text-align: center;
-        padding: 22px 16px 26px;
-    }
-    .rp-page-header h1 {
-        margin: 0 0 6px;
-        font-size: 22px;
-    }
-    .rp-page-header a {
-        color: #eafff2;
-        font-size: 13px;
-        text-decoration: none;
-        opacity: 0.9;
-    }
-    .rp-page-header a:hover { text-decoration: underline; }
-</style>
-
 <link rel="stylesheet" href="css/result-app.css" />
 </head>
 <body>
 
-    <header class="rp-page-header">
-        <h1>পরীক্ষার ফলাফল</h1>
-        <a href="../index.html">← মূল পাতায় ফিরে যান</a>
+    <!-- ================= টপ ব্র্যান্ড + নেভিগেশন বার ================= -->
+    <header class="rp-topbar">
+        <div class="rp-brand">
+            <img id="rpBrandLogo" class="rp-brand-logo" src="" alt="logo" onerror="this.style.display='none'" />
+            <div class="rp-brand-text">
+                <div class="rp-brand-name" id="rpBrandName"></div>
+                <div class="rp-brand-addr" id="rpBrandAddr"></div>
+            </div>
+        </div>
+        <nav class="rp-nav">
+            <button class="rp-nav-btn" data-view="home">হোম</button>
+            <button class="rp-nav-btn" data-view="search">ব্যক্তিগত ফলাফল</button>
+            <button class="rp-nav-btn" data-view="jamah">জামাত ভিত্তিক ফলাফল</button>
+            <button class="rp-nav-btn" data-view="glance">এক নজরে ফলাফল</button>
+            <button class="rp-nav-btn" data-view="chart">পাই চার্ট</button>
+            <a class="rp-nav-home" href="../index.html">মূল পাতা</a>
+        </nav>
     </header>
 
     <div id="rpStatus" class="rp-status" style="display:none;"></div>
@@ -59,6 +45,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <!-- ============ Application Modules (নির্দিষ্ট ক্রমে লোড হতে হবে) ============ -->
+    <script src="js/site-config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/constants.js"></script>
     <script src="js/ranking.js"></script>
