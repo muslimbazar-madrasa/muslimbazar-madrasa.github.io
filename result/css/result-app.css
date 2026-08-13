@@ -1,21 +1,84 @@
 /**
  * result-app.css
  * ------------------------------------------------------------
- * পাবলিক ফলাফল অ্যাপের নিজস্ব স্টাইল। সব ক্লাস "rp-" প্রিফিক্স দিয়ে
- * লেখা হয়েছে, যাতে সাইটের বিদ্যমান style.css-এর কোনো ক্লাসের সাথে
- * সংঘর্ষ না হয়।
+ * পাবলিক ফলাফল অ্যাপের স্টাইল। সব ক্লাস "rp-" প্রিফিক্স দিয়ে লেখা।
  * ------------------------------------------------------------
  */
 
+:root {
+    --rp-green: #0f6e4f;
+    --rp-green-dark: #0c5940;
+    --rp-green-light: #16a34a;
+    --rp-ink: #1f2a44;
+    --rp-muted: #6b7280;
+    --rp-border: #dfe4e0;
+    --rp-bg: #eef2f0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--rp-bg);
+    color: var(--rp-ink);
+    font-family: 'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif;
+}
+
+/* ================= টপ নেভিগেশন বার ================= */
+
+.rp-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--rp-green), var(--rp-green-dark));
+    color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.rp-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.rp-brand-logo {
+    width: 46px; height: 46px; border-radius: 50%;
+    object-fit: cover; background: #fff; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+.rp-brand-text { min-width: 0; }
+.rp-brand-name {
+    font-weight: 800; font-size: 15px; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rp-brand-addr { font-size: 11.5px; opacity: 0.9; }
+
+.rp-nav { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.rp-nav-btn {
+    border: none; background: rgba(255,255,255,0.12); color: #fff;
+    font-weight: 600; font-size: 13px; padding: 8px 14px;
+    border-radius: 999px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s ease;
+}
+.rp-nav-btn:hover { background: rgba(255,255,255,0.24); }
+.rp-nav-btn.active { background: #fff; color: var(--rp-green-dark); }
+.rp-nav-home {
+    border: none; background: transparent; color: #eafff2;
+    font-size: 12px; text-decoration: none; padding: 6px 8px;
+    opacity: 0.9;
+}
+.rp-nav-home:hover { text-decoration: underline; }
+
+/* ================= কনটেইনার / সাধারণ কার্ড ================= */
+
 .rp-wrap {
-    max-width: 900px;
-    margin: 24px auto;
+    max-width: 980px;
+    margin: 22px auto;
     padding: 0 16px 40px;
-    font-family: inherit;
 }
 
 .rp-status {
-    max-width: 900px;
+    max-width: 980px;
     margin: 16px auto;
     padding: 12px 16px;
     border-radius: 10px;
@@ -26,181 +89,183 @@
 }
 .rp-status-error { background: #fdecea; color: #b3261e; }
 
-/* হোম কার্ড গ্রিড */
 .rp-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
 }
-@media (max-width: 520px) {
-    .rp-cards { grid-template-columns: 1fr; }
-}
+@media (max-width: 520px) { .rp-cards { grid-template-columns: 1fr; } }
 .rp-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 24px 12px;
-    border: none;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.12);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 26px 12px; border: none; border-radius: 16px; background: #fff;
+    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1);
+    cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.rp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20, 20, 60, 0.18); }
+.rp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20, 20, 60, 0.16); }
 .rp-card-icon { font-size: 30px; }
-.rp-card-title { font-size: 16px; font-weight: 700; color: #1f2a44; }
-.rp-card-sub { font-size: 12px; color: #6b7280; }
+.rp-card-title { font-size: 16px; font-weight: 700; color: var(--rp-ink); }
+.rp-card-sub { font-size: 12px; color: var(--rp-muted); }
 
-/* Back bar */
-.rp-backbar { margin-bottom: 14px; }
+.rp-backbar { margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .rp-back {
-    border: none;
-    background: rgba(255,255,255,0.85);
-    color: #1f2a44;
-    font-weight: 600;
-    padding: 8px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(20,20,60,0.12);
+    border: none; background: #fff; color: var(--rp-ink); font-weight: 600;
+    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(20,20,60,0.1);
 }
-.rp-back:hover { background: #ffffff; }
+.rp-back:hover { background: #f3f6f4; }
 
-.rp-panel {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.12);
+.rp-print-btn {
+    border: none; background: var(--rp-green); color: #fff; font-weight: 600;
+    padding: 8px 16px; border-radius: 999px; cursor: pointer;
 }
-.rp-panel-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1f2a44;
-    margin: 0 0 16px;
-    text-align: center;
+.rp-print-btn:hover { background: var(--rp-green-dark); }
+
+.rp-panel { background: #fff; border-radius: 16px; padding: 22px; box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1); }
+.rp-panel-title { font-size: 18px; font-weight: 700; color: var(--rp-ink); margin: 0 0 18px; text-align: center; position: relative; padding-bottom: 10px; }
+.rp-panel-title::after {
+    content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 70px; height: 3px; background: #e9a227; border-radius: 3px;
 }
 
 /* বিভাগ নির্বাচন */
-.rp-dept-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-}
-@media (max-width: 560px) {
-    .rp-dept-grid { grid-template-columns: 1fr; }
-}
+.rp-dept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 560px) { .rp-dept-grid { grid-template-columns: 1fr; } }
 .rp-dept-btn {
-    padding: 18px 10px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #16a34a, #0f6e4f);
-    color: #fff;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
+    padding: 18px 10px; border: none; border-radius: 14px;
+    background: linear-gradient(135deg, var(--rp-green-light), var(--rp-green-dark));
+    color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
     box-shadow: 0 4px 12px rgba(15,110,79,0.25);
 }
 .rp-dept-btn:hover { filter: brightness(1.08); }
 
 /* জামাত/গ্রুপ নির্বাচন */
-.rp-group-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-@media (max-width: 560px) {
-    .rp-group-grid { grid-template-columns: repeat(2, 1fr); }
-}
+.rp-group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 560px) { .rp-group-grid { grid-template-columns: repeat(2, 1fr); } }
 .rp-group-btn {
-    padding: 14px 8px;
-    border: 1px solid #d7e3da;
-    border-radius: 10px;
-    background: #f4faf6;
-    color: #14532d;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
+    padding: 14px 8px; border: 1px solid #d7e3da; border-radius: 10px;
+    background: #f4faf6; color: #14532d; font-weight: 600; font-size: 14px; cursor: pointer;
 }
 .rp-group-btn:hover { background: #e5f5ea; }
 .rp-group-btn-all { grid-column: 1 / -1; background: #eaf1ff; border-color: #cddcff; color: #1e3a8a; }
 
-/* সার্চ */
-.rp-search-row { display: flex; gap: 10px; margin-bottom: 16px; }
-.rp-input {
-    flex: 1;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #d7dbe3;
-    font-size: 15px;
+/* সার্চ ফর্ম */
+.rp-form-label { font-size: 13px; color: var(--rp-muted); margin: 0 0 6px; font-weight: 600; }
+.rp-form-row { margin-bottom: 16px; }
+.rp-search-row { display: flex; gap: 10px; }
+.rp-input, .rp-select {
+    flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #d7dbe3;
+    font-size: 15px; font-family: inherit; background: #fff;
 }
 .rp-btn {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    background: #0f6e4f;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
+    padding: 12px 22px; border: none; border-radius: 10px; background: var(--rp-green);
+    color: #fff; font-weight: 700; cursor: pointer;
 }
-.rp-btn:hover { background: #0c5940; }
-.rp-empty { text-align: center; color: #6b7280; padding: 20px 0; }
+.rp-btn:hover { background: var(--rp-green-dark); }
+.rp-empty { text-align: center; color: var(--rp-muted); padding: 20px 0; }
 
-/* ব্যক্তিগত ফলাফল কার্ড */
-.rp-personal-card {
-    border: 1px solid #eef0f3;
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 8px;
-}
-.rp-personal-head { text-align: center; margin-bottom: 10px; }
-.rp-personal-name { font-size: 19px; font-weight: 800; color: #1f2a44; }
-.rp-personal-sub { font-size: 13px; color: #6b7280; }
-.rp-personal-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #374151;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-.rp-stats-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 14px;
-}
-.rp-stat {
-    flex: 1 1 120px;
-    background: #f7f9fb;
-    border-radius: 10px;
-    padding: 10px 12px;
-    text-align: center;
-}
-.rp-stat span { display: block; font-size: 12px; color: #6b7280; margin-bottom: 4px; }
-.rp-stat b { font-size: 16px; color: #1f2a44; }
+/* ================= রিপোর্ট হেডার (মাদরাসার নাম/ঠিকানা/পরীক্ষা) ================= */
 
-/* টেবিল */
-.rp-table-wrap { overflow-x: auto; }
-.rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.rp-table th, .rp-table td {
-    border: 1px solid #e5e7eb;
-    padding: 6px 8px;
-    text-align: center;
-    white-space: nowrap;
+.rp-report-head { text-align: center; margin-bottom: 18px; position: relative; }
+.rp-report-logo {
+    width: 66px; height: 66px; border-radius: 50%; object-fit: cover;
+    display: block; margin: 0 auto 6px;
 }
-.rp-table thead th { background: #f0f4f2; color: #1f2a44; }
-.rp-table .rp-td-name { text-align: right; white-space: normal; min-width: 120px; }
-.rp-table-sm td, .rp-table-sm th { white-space: normal; }
+.rp-report-name { font-size: 20px; font-weight: 800; color: var(--rp-green); margin: 0; }
+.rp-report-addr { font-size: 13px; color: var(--rp-muted); margin: 2px 0 8px; }
+.rp-report-exam { font-size: 14.5px; font-weight: 700; color: var(--rp-ink); margin: 0; }
+.rp-report-subtitle { font-size: 14px; font-weight: 700; color: var(--rp-green-dark); margin-top: 4px; }
 
-.rp-grade-pass { color: #0f6e4f; font-weight: 700; }
+/* ================= ব্যক্তিগত ফলাফল (মার্কশিট) ================= */
+
+.rp-personal-card { border: 1px solid #eef0f3; border-radius: 14px; padding: 20px; margin-top: 8px; }
+
+.rp-info-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+.rp-info-table td { border: 1px solid var(--rp-border); padding: 8px 12px; }
+.rp-info-table td.rp-info-label { background: #f4f7f5; font-weight: 700; width: 20%; color: var(--rp-ink); }
+.rp-info-table td.rp-info-value { width: 30%; }
+
+.rp-subject-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rp-subject-table th, .rp-subject-table td { border: 1px solid var(--rp-border); padding: 8px 10px; text-align: center; }
+.rp-subject-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
+.rp-subject-table td.rp-td-name { text-align: right; }
+.rp-subject-table tfoot td { font-weight: 700; background: #f4f7f5; }
+.rp-subject-table tfoot td.rp-foot-label { text-align: right; background: #eef2f0; }
+
+.rp-sign-row { display: flex; justify-content: space-between; gap: 24px; margin-top: 36px; flex-wrap: wrap; }
+.rp-sign-block { flex: 1 1 200px; text-align: center; }
+.rp-sign-line { border-top: 1px solid #333; padding-top: 6px; font-size: 13px; font-weight: 600; }
+.rp-sign-date { font-size: 12px; color: var(--rp-muted); margin-top: 2px; }
+
+.rp-note { font-size: 11.5px; color: var(--rp-muted); margin-top: 18px; line-height: 1.6; border-top: 1px dashed var(--rp-border); padding-top: 10px; }
+
+.rp-grade-pass { color: var(--rp-green-dark); font-weight: 700; }
 .rp-grade-fail { color: #b3261e; font-weight: 700; }
 .rp-grade-special { color: #92610a; font-weight: 700; }
 
-/* চার্ট */
+/* ================= জামাত/গ্রুপ-ভিত্তিক ফলাফল টেবিল ================= */
+
+.rp-jamah-summary-box {
+    display: inline-flex; flex-direction: column; gap: 3px;
+    border: 1px solid var(--rp-border); border-radius: 8px; background: #f9fbfa;
+    padding: 10px 14px; font-size: 12px; margin: 0 auto 16px; text-align: left;
+}
+.rp-jamah-summary-box div { display: flex; justify-content: space-between; gap: 14px; }
+.rp-jamah-summary-box b { color: var(--rp-green-dark); }
+
+.rp-table-wrap { overflow-x: auto; }
+.rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rp-table th, .rp-table td {
+    border: 1px solid #e5e7eb; padding: 6px 8px; text-align: center; white-space: nowrap;
+}
+.rp-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
+.rp-table .rp-td-name { text-align: right; white-space: normal; min-width: 130px; }
+.rp-table-sm td, .rp-table-sm th { white-space: normal; }
+
+.rp-vert-th {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    height: 92px;
+    vertical-align: bottom;
+    padding: 6px 4px !important;
+    font-size: 12px;
+}
+
+.rp-table tfoot td { font-weight: 700; background: #f4f7f5; }
+
+/* ================= এক নজরে ফলাফল (সম্মিলিত রিপোর্ট) ================= */
+
+.rp-glance-title { font-size: 16px; font-weight: 800; text-align: center; color: var(--rp-ink); margin: 22px 0 10px; }
+.rp-division-title {
+    font-size: 14px; font-weight: 700; color: #fff; background: var(--rp-green-dark);
+    padding: 7px 12px; border-radius: 8px 8px 0 0; margin-top: 20px;
+}
+.rp-division-table-wrap { overflow-x: auto; }
+.rp-division-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.rp-division-table th, .rp-division-table td { border: 1px solid #e5e7eb; padding: 6px 7px; text-align: center; }
+.rp-division-table thead th { background: #eef2f0; color: var(--rp-ink); }
+.rp-division-table td.rp-td-name { text-align: right; white-space: normal; min-width: 120px; }
+.rp-division-table tr.rp-row-total td { font-weight: 800; background: #f4f7f5; }
+
+.rp-merit-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+.rp-merit-table th, .rp-merit-table td { border: 1px solid #e5e7eb; padding: 7px 9px; text-align: center; }
+.rp-merit-table thead th { background: var(--rp-green); color: #fff; }
+.rp-merit-table td.rp-td-name { text-align: right; white-space: normal; min-width: 160px; }
+.rp-merit-dept-cell { font-weight: 700; background: #f9fbfa; }
+
+/* ================= চার্ট ================= */
+
 .rp-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .rp-chart-wrap canvas { max-width: 100%; }
 .rp-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; font-size: 13px; }
 .legend-item { display: flex; align-items: center; gap: 6px; }
 .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* ================= প্রিন্ট ================= */
+
+@media print {
+    .rp-topbar, .rp-backbar, .rp-print-btn, #rpStatus, .rp-page-header { display: none !important; }
+    body { background: #fff; }
+    .rp-wrap { max-width: 100%; margin: 0; padding: 0; }
+    .rp-panel { box-shadow: none; padding: 0; border-radius: 0; }
+    .rp-personal-card { border: none; padding: 0; }
+}
