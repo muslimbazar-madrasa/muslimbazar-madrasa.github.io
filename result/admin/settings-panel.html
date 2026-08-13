@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>সেটিংস প্যানেল (অ্যাডমিন)</title>
+<link rel="stylesheet" href="../css/result-app.css" />
+<style>
+    body { font-family: 'Noto Sans Bengali','SolaimanLipi',Arial,sans-serif; background:#eef2f0; margin:0; }
+
+    /* ---- পাসওয়ার্ড গেট ---- */
+    .gate-wrap {
+        min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .gate-box {
+        background: #fff; border-radius: 16px; padding: 30px 26px; max-width: 360px; width: 100%;
+        box-shadow: 0 6px 24px rgba(20,20,60,0.15); text-align: center;
+    }
+    .gate-box h1 { font-size: 17px; margin: 0 0 6px; color:#1f2a44; }
+    .gate-box p { font-size: 12.5px; color:#6b7280; margin: 0 0 18px; line-height:1.6; }
+    .gate-box input {
+        width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #d7dbe3;
+        font-size: 15px; margin-bottom: 12px; box-sizing: border-box; text-align:center;
+    }
+    .gate-box button {
+        width: 100%; padding: 12px; border: none; border-radius: 10px; background: #0f6e4f;
+        color: #fff; font-weight: 700; cursor: pointer; font-size: 15px;
+    }
+    .gate-error { color:#b3261e; font-size:12.5px; margin-top:8px; display:none; }
+
+    /* ---- অ্যাডমিন প্যানেল লেআউট ---- */
+    .admin-wrap { display: none; max-width: 1180px; margin: 0 auto; padding: 20px; }
+    .admin-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
+    .admin-head h1 { font-size: 18px; color:#1f2a44; margin:0; }
+    .admin-grid { display:grid; grid-template-columns: 300px 1fr; gap: 18px; align-items:start; }
+    @media (max-width: 800px) { .admin-grid { grid-template-columns: 1fr; } }
+
+    .ctrl-panel { background:#fff; border-radius:14px; padding:18px; box-shadow:0 4px 14px rgba(20,20,60,0.08); position:sticky; top:16px; }
+    .ctrl-group { margin-bottom:16px; }
+    .ctrl-group h3 { font-size:12.5px; color:#6b7280; text-transform:uppercase; letter-spacing:.03em; margin:0 0 8px; }
+    .ctrl-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .ctrl-row label { font-size:13px; color:#1f2a44; }
+    .ctrl-row input[type=color] { width:44px; height:30px; border:1px solid #d7dbe3; border-radius:6px; padding:0; cursor:pointer; }
+    .ctrl-row select, .ctrl-row input[type=text], .ctrl-row input[type=range] { font-size:13px; padding:6px 8px; border-radius:8px; border:1px solid #d7dbe3; }
+    .ctrl-row .val-badge { font-size:11px; color:#6b7280; min-width:44px; text-align:right; }
+
+    .preview-panel { background:#fff; border-radius:14px; padding:18px; box-shadow:0 4px 14px rgba(20,20,60,0.08); overflow-x:auto; }
+    .preview-title { font-size:13px; font-weight:700; color:#6b7280; margin:0 0 10px; }
+
+    .gen-btn, .reset-btn {
+        width:100%; padding:11px; border:none; border-radius:10px; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:4px;
+    }
+    .gen-btn { background:#0f6e4f; color:#fff; }
+    .reset-btn { background:#f4f7f5; color:#1f2a44; border:1px solid #dfe4e0; }
+
+    .code-box { margin-top:18px; }
+    .code-box textarea {
+        width:100%; height:260px; font-family: 'Consolas','Monaco',monospace; font-size:12.5px;
+        border-radius:10px; border:1px solid #d7dbe3; padding:12px; box-sizing:border-box; background:#0c1220; color:#c9e8d9;
+    }
+    .copy-btn { margin-top:8px; padding:9px 18px; border:none; border-radius:8px; background:#0f6e4f; color:#fff; font-weight:700; cursor:pointer; }
+    .copy-note { font-size:12px; color:#6b7280; margin-top:6px; }
+</style>
+</head>
+<body>
+
+    <!-- ================= পাসওয়ার্ড গেট ================= -->
+    <div class="gate-wrap" id="gateWrap">
+        <div class="gate-box">
+            <h1>🔒 সেটিংস প্যানেল</h1>
+            <p>
+                এটি শুধু অ্যাডমিনের জন্য — লাইভ প্রিভিউ দেখে রং, ফন্ট, এলাইনমেন্ট, হেডার উচ্চতা ঠিক করে নিন।
+                এখানে পরিবর্তন করলে তা শুধু <b>এই ব্রাউজারেই</b> প্রিভিউ হিসেবে দেখা যাবে; ভিজিটররা তা দেখবে না —
+                নিচে জেনারেট হওয়া কোডটা <code>js/settings.js</code>-এ বসিয়ে GitHub-এ সেভ করলে তবেই সবার জন্য কার্যকর হবে।
+            </p>
+            <input type="password" id="pwInput" placeholder="পাসওয়ার্ড দিন" />
+            <button id="pwSubmit">ঢুকুন</button>
+            <div class="gate-error" id="gateError">পাসওয়ার্ড সঠিক নয়, আবার চেষ্টা করুন।</div>
+        </div>
+    </div>
+
+    <!-- ================= অ্যাডমিন প্যানেল ================= -->
+    <div class="admin-wrap" id="adminWrap">
+        <div class="admin-head">
+            <h1>সেটিংস প্যানেল — লাইভ প্রিভিউ</h1>
+            <button class="reset-btn" id="lockBtn" style="width:auto;">🔒 লক করুন</button>
+        </div>
+
+        <div class="admin-grid">
+            <!-- কন্ট্রোল -->
+            <div class="ctrl-panel">
+                <div class="ctrl-group">
+                    <h3>রং</h3>
+                    <div class="ctrl-row"><label>প্রধান সবুজ</label><input type="color" id="colorGreen"></div>
+                    <div class="ctrl-row"><label>গাঢ় সবুজ</label><input type="color" id="colorGreenDark"></div>
+                    <div class="ctrl-row"><label>হালকা সবুজ</label><input type="color" id="colorGreenLight"></div>
+                    <div class="ctrl-row"><label>লেখার রং (ইঙ্ক)</label><input type="color" id="colorInk"></div>
+                    <div class="ctrl-row"><label>ম্লান/সাব-টেক্সট</label><input type="color" id="colorMuted"></div>
+                    <div class="ctrl-row"><label>বর্ডার</label><input type="color" id="colorBorder"></div>
+                    <div class="ctrl-row"><label>ব্যাকগ্রাউন্ড</label><input type="color" id="colorBg"></div>
+                </div>
+
+                <div class="ctrl-group">
+                    <h3>ফন্ট</h3>
+                    <div class="ctrl-row">
+                        <label>ফন্ট পরিবার</label>
+                        <select id="fontFamily">
+                            <option value="'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif">Noto Sans Bengali</option>
+                            <option value="'SolaimanLipi', Arial, sans-serif">SolaimanLipi</option>
+                            <option value="'Hind Siliguri', Arial, sans-serif">Hind Siliguri</option>
+                            <option value="'Kalpurush', Arial, sans-serif">Kalpurush</option>
+                        </select>
+                    </div>
+                    <div class="ctrl-row">
+                        <label>বেস ফন্ট সাইজ</label>
+                        <input type="range" id="fontSizeBase" min="12" max="18" step="1">
+                        <span class="val-badge" id="fontSizeBaseVal"></span>
+                    </div>
+                </div>
+
+                <div class="ctrl-group">
+                    <h3>এলাইনমেন্ট</h3>
+                    <div class="ctrl-row">
+                        <label>নাম/বিষয় কলাম</label>
+                        <select id="nameAlign">
+                            <option value="left">বাম</option>
+                            <option value="center">মাঝে</option>
+                            <option value="right">ডান</option>
+                        </select>
+                    </div>
+                    <div class="copy-note">সামারী/টোটাল সারি সবসময় ডান দিকেই থাকবে (এটা বদলায় না)।</div>
+                </div>
+
+                <div class="ctrl-group">
+                    <h3>উল্লম্ব হেডার</h3>
+                    <div class="ctrl-row">
+                        <label>উচ্চতা</label>
+                        <select id="vertHeaderMode">
+                            <option value="auto">স্বয়ংক্রিয় (লেখা অনুযায়ী)</option>
+                            <option value="fixed">নির্দিষ্ট মাপ</option>
+                        </select>
+                    </div>
+                    <div class="ctrl-row" id="vertHeaderPxRow" style="display:none;">
+                        <label>উচ্চতা (px)</label>
+                        <input type="range" id="vertHeaderPx" min="60" max="180" step="2">
+                        <span class="val-badge" id="vertHeaderPxVal"></span>
+                    </div>
+                </div>
+
+                <button class="reset-btn" id="resetBtn">ডিফল্টে ফিরে যান</button>
+                <button class="gen-btn" id="genBtn">✓ কোড জেনারেট করুন</button>
+
+                <div class="code-box" id="codeBox" style="display:none;">
+                    <h3 style="font-size:12.5px;color:#6b7280;margin:0 0 8px;">নিচের পুরো কোডটা কপি করে js/settings.js ফাইলের পুরো কন্টেন্ট প্রতিস্থাপন করুন</h3>
+                    <textarea id="codeOutput" readonly></textarea>
+                    <button class="copy-btn" id="copyBtn">কপি করুন</button>
+                    <div class="copy-note" id="copyNote"></div>
+                </div>
+            </div>
+
+            <!-- লাইভ প্রিভিউ -->
+            <div class="preview-panel">
+                <p class="preview-title">লাইভ প্রিভিউ (আসল টেবিলের নমুনা)</p>
+
+                <div class="rp-panel" style="margin-bottom:20px;">
+                    <h4 class="rp-panel-title">এক নজরে ফলাফল — নমুনা</h4>
+                    <div class="rp-division-table-wrap">
+                        <table class="rp-division-table">
+                            <thead>
+                                <tr>
+                                    <th>জামাত/গ্রুপ</th><th>ছাত্র</th><th>পাশ</th>
+                                    <th class="rp-vert-th">মুমতাজ</th>
+                                    <th class="rp-vert-th">জা. জিদ্দান</th>
+                                    <th class="rp-vert-th">জায়্যিদ</th>
+                                    <th class="rp-vert-th">মাকবুল</th>
+                                    <th>পাসের হার</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="rp-td-name">তাকমিল</td><td>৩০</td><td>১৯</td>
+                                    <td>৩</td><td>২</td><td>৯</td><td>৫</td><td>৬৩.৩৩%</td>
+                                </tr>
+                                <tr>
+                                    <td class="rp-td-name">হেদায়াতুন নাহু</td><td>২৩</td><td>১৮</td>
+                                    <td>১০</td><td>০</td><td>২</td><td>৬</td><td>৭৮.২৬%</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="rp-row-total">
+                                    <td class="rp-td-name">সম্মিলিত</td><td>৫৩</td><td>৩৭</td>
+                                    <td>১৩</td><td>২</td><td>১১</td><td>১১</td><td>৬৯.৮১%</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="rp-panel">
+                    <h4 class="rp-panel-title">ব্যক্তিগত ফলাফল — নমুনা</h4>
+                    <table class="rp-subject-table">
+                        <thead><tr><th>বিষয়</th><th>পূর্ণমান</th><th>প্রাপ্ত</th><th>গ্রেড</th></tr></thead>
+                        <tbody>
+                            <tr><td class="rp-td-name">হেদায়াতুন নাহু</td><td>১০০</td><td>৯৭</td><td class="rp-grade-pass">মুমতাজ</td></tr>
+                            <tr><td class="rp-td-name">শরহে বেকায়া</td><td>১০০</td><td>৮৯</td><td class="rp-grade-pass">মুমতাজ</td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr><td class="rp-foot-label">সর্বমোট</td><td>২০০</td><td>১৮৬</td><td>—</td></tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="../js/settings.js"></script>
+<script>
+(function () {
+    // ============== পাসওয়ার্ড (SHA-256 হ্যাশ) ==============
+    // ডিফল্ট পাসওয়ার্ড: admin1234  — এটা অবশ্যই বদলে নিন!
+    // নতুন পাসওয়ার্ডের হ্যাশ বের করতে ব্রাউজার কনসোলে চালান:
+    //   crypto.subtle.digest('SHA-256', new TextEncoder().encode('আপনারনতুনপাসওয়ার্ড'))
+    //     .then(b => console.log(Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('')));
+    // তারপর নিচের STORED_HASH বদলে দিন।
+    //
+    // ⚠️ মনে রাখবেন: এই রিপো যদি পাবলিক হয়, তাহলে এই হ্যাশও যে কেউ দেখতে পাবে।
+    // এটা প্রকৃত নিরাপত্তা নয় — সাধারণ ভিজিটরকে ঠেকানোর জন্য একটা সহজ গেট মাত্র।
+    // এই পেজের লিংক প্রধান সাইটের নেভিগেশনে না রাখাই ভালো।
+    const STORED_HASH = 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270';
+
+    async function sha256(text) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const gateWrap = document.getElementById('gateWrap');
+    const adminWrap = document.getElementById('adminWrap');
+    const pwInput = document.getElementById('pwInput');
+    const gateError = document.getElementById('gateError');
+
+    async function tryUnlock() {
+        const hash = await sha256(pwInput.value);
+        if (hash === STORED_HASH) {
+            gateWrap.style.display = 'none';
+            adminWrap.style.display = 'block';
+            initPanel();
+        } else {
+            gateError.style.display = 'block';
+        }
+    }
+    document.getElementById('pwSubmit').addEventListener('click', tryUnlock);
+    pwInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryUnlock(); });
+    document.getElementById('lockBtn').addEventListener('click', function () {
+        adminWrap.style.display = 'none';
+        gateWrap.style.display = 'flex';
+        pwInput.value = '';
+        gateError.style.display = 'none';
+    });
+
+    // ============== প্যানেল লজিক ==============
+    function initPanel() {
+        const defaults = window.RP_DEFAULT_SETTINGS;
+        let current = Object.assign({}, defaults);
+
+        try {
+            const saved = localStorage.getItem('rp_settings_preview');
+            if (saved) current = Object.assign({}, defaults, JSON.parse(saved));
+        } catch (e) {}
+
+        const $ = id => document.getElementById(id);
+
+        function fieldsFromCurrent() {
+            $('colorGreen').value = current.colorGreen;
+            $('colorGreenDark').value = current.colorGreenDark;
+            $('colorGreenLight').value = current.colorGreenLight;
+            $('colorInk').value = current.colorInk;
+            $('colorMuted').value = current.colorMuted;
+            $('colorBorder').value = current.colorBorder;
+            $('colorBg').value = current.colorBg;
+            $('fontFamily').value = current.fontFamily;
+
+            const fsize = parseInt(current.fontSizeBase, 10) || 14;
+            $('fontSizeBase').value = fsize;
+            $('fontSizeBaseVal').textContent = fsize + 'px';
+
+            $('nameAlign').value = current.nameAlign;
+
+            if (current.vertHeaderHeight === 'auto') {
+                $('vertHeaderMode').value = 'auto';
+                $('vertHeaderPxRow').style.display = 'none';
+                $('vertHeaderPx').value = 92;
+                $('vertHeaderPxVal').textContent = '92px';
+            } else {
+                $('vertHeaderMode').value = 'fixed';
+                $('vertHeaderPxRow').style.display = 'flex';
+                const px = parseInt(current.vertHeaderHeight, 10) || 92;
+                $('vertHeaderPx').value = px;
+                $('vertHeaderPxVal').textContent = px + 'px';
+            }
+        }
+
+        function readFieldsToCurrent() {
+            current.colorGreen = $('colorGreen').value;
+            current.colorGreenDark = $('colorGreenDark').value;
+            current.colorGreenLight = $('colorGreenLight').value;
+            current.colorInk = $('colorInk').value;
+            current.colorMuted = $('colorMuted').value;
+            current.colorBorder = $('colorBorder').value;
+            current.colorBg = $('colorBg').value;
+            current.fontFamily = $('fontFamily').value;
+            current.fontSizeBase = $('fontSizeBase').value + 'px';
+            $('fontSizeBaseVal').textContent = current.fontSizeBase;
+            current.nameAlign = $('nameAlign').value;
+
+            if ($('vertHeaderMode').value === 'auto') {
+                current.vertHeaderHeight = 'auto';
+                $('vertHeaderPxRow').style.display = 'none';
+            } else {
+                $('vertHeaderPxRow').style.display = 'flex';
+                current.vertHeaderHeight = $('vertHeaderPx').value + 'px';
+                $('vertHeaderPxVal').textContent = current.vertHeaderHeight;
+            }
+        }
+
+        function applyLive() {
+            readFieldsToCurrent();
+            window.RP_applySettings(current);
+            try { localStorage.setItem('rp_settings_preview', JSON.stringify(current)); } catch (e) {}
+        }
+
+        [
+            'colorGreen', 'colorGreenDark', 'colorGreenLight', 'colorInk', 'colorMuted', 'colorBorder', 'colorBg',
+            'fontFamily', 'fontSizeBase', 'nameAlign', 'vertHeaderMode', 'vertHeaderPx'
+        ].forEach(id => {
+            $(id).addEventListener('input', applyLive);
+            $(id).addEventListener('change', applyLive);
+        });
+
+        $('resetBtn').addEventListener('click', function () {
+            current = Object.assign({}, defaults);
+            fieldsFromCurrent();
+            window.RP_applySettings(current);
+            try { localStorage.removeItem('rp_settings_preview'); } catch (e) {}
+        });
+
+        $('genBtn').addEventListener('click', function () {
+            readFieldsToCurrent();
+            const code = `/**
+ * settings.js
+ * ------------------------------------------------------------
+ * সাইটের রং, ফন্ট, এলাইনমেন্ট, হেডার উচ্চতা — এই জিনিসগুলো এখান
+ * থেকে নিয়ন্ত্রণ করা যায়। নিচের RP_DEFAULT_SETTINGS অবজেক্টের
+ * মান বদলে GitHub-এ সেভ করলেই পুরো সাইটে (সব ভিজিটরের জন্য)
+ * পরিবর্তনটা কার্যকর হয়ে যাবে।
+ * ------------------------------------------------------------
+ */
+(function () {
+    'use strict';
+
+    const RP_DEFAULT_SETTINGS = {
+        colorGreen: '${current.colorGreen}',
+        colorGreenDark: '${current.colorGreenDark}',
+        colorGreenLight: '${current.colorGreenLight}',
+        colorInk: '${current.colorInk}',
+        colorMuted: '${current.colorMuted}',
+        colorBorder: '${current.colorBorder}',
+        colorBg: '${current.colorBg}',
+        fontFamily: "${current.fontFamily}",
+        fontSizeBase: '${current.fontSizeBase}',
+        nameAlign: '${current.nameAlign}',
+        vertHeaderHeight: '${current.vertHeaderHeight}'
+    };
+
+    function applySettings(settings) {
+        const root = document.documentElement.style;
+        root.setProperty('--rp-green', settings.colorGreen);
+        root.setProperty('--rp-green-dark', settings.colorGreenDark);
+        root.setProperty('--rp-green-light', settings.colorGreenLight);
+        root.setProperty('--rp-ink', settings.colorInk);
+        root.setProperty('--rp-muted', settings.colorMuted);
+        root.setProperty('--rp-border', settings.colorBorder);
+        root.setProperty('--rp-bg', settings.colorBg);
+        root.setProperty('--rp-font-family', settings.fontFamily);
+        root.setProperty('--rp-font-size-base', settings.fontSizeBase);
+        root.setProperty('--rp-name-align', settings.nameAlign);
+        root.setProperty('--rp-vert-header-height', settings.vertHeaderHeight);
+    }
+
+    let settings = RP_DEFAULT_SETTINGS;
+    try {
+        const isPreview = window.location.search.indexOf('rp_preview=1') !== -1;
+        if (isPreview) {
+            const override = localStorage.getItem('rp_settings_preview');
+            if (override) settings = Object.assign({}, RP_DEFAULT_SETTINGS, JSON.parse(override));
+        }
+    } catch (e) {}
+
+    applySettings(settings);
+
+    window.RP_DEFAULT_SETTINGS = RP_DEFAULT_SETTINGS;
+    window.RP_applySettings = applySettings;
+})();
+`;
+            $('codeOutput').value = code;
+            $('codeBox').style.display = 'block';
+            $('codeBox').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        $('copyBtn').addEventListener('click', function () {
+            $('codeOutput').select();
+            document.execCommand('copy');
+            $('copyNote').textContent = '✓ কপি হয়েছে — এখন এটা js/settings.js ফাইলে পেস্ট করে GitHub-এ কমিট করুন।';
+        });
+
+        fieldsFromCurrent();
+        window.RP_applySettings(current);
+    }
+})();
+</script>
+
+</body>
+</html>
