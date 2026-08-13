@@ -444,7 +444,7 @@
         <div class="rp-division-title">${esc(title)}</div>
         <div class="rp-division-table-wrap">
             <table class="rp-division-table">
-                <thead><tr><th>জামাত/গ্রুপ</th><th>ছাত্র</th><th>পাশ</th>${colLabels.map(c => `<th>${esc(c)}</th>`).join('')}<th>পাসের হার</th></tr></thead>
+                <thead><tr><th>জামাত/গ্রুপ</th><th>ছাত্র</th><th>পাশ</th>${colLabels.map(c => `<th class="rp-vert-th">${esc(c)}</th>`).join('')}<th>পাসের হার</th></tr></thead>
                 <tbody>${bodyRows}${totalRow}</tbody>
             </table>
         </div>`;
