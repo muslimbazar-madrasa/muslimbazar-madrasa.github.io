@@ -187,7 +187,7 @@ body {
 .rp-subject-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .rp-subject-table th, .rp-subject-table td { border: 1px solid var(--rp-border); padding: 8px 10px; text-align: center; }
 .rp-subject-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
-.rp-subject-table td.rp-td-name { text-align: right; }
+.rp-subject-table td.rp-td-name { text-align: left; }
 .rp-subject-table tfoot td { font-weight: 700; background: #f4f7f5; }
 .rp-subject-table tfoot td.rp-foot-label { text-align: right; background: #eef2f0; }
 
@@ -218,8 +218,10 @@ body {
     border: 1px solid #e5e7eb; padding: 6px 8px; text-align: center; white-space: nowrap;
 }
 .rp-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
-.rp-table .rp-td-name { text-align: right; white-space: normal; min-width: 130px; }
+.rp-table .rp-td-name { text-align: left; white-space: normal; min-width: 130px; }
 .rp-table-sm td, .rp-table-sm th { white-space: normal; }
+/* একদম নিচের সামারী সারিতে নাম কলাম ডান দিকে থাকবে */
+.rp-table tfoot td.rp-td-name { text-align: right; }
 
 .rp-vert-th {
     writing-mode: vertical-rl;
@@ -243,13 +245,15 @@ body {
 .rp-division-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .rp-division-table th, .rp-division-table td { border: 1px solid #e5e7eb; padding: 6px 7px; text-align: center; }
 .rp-division-table thead th { background: #eef2f0; color: var(--rp-ink); }
-.rp-division-table td.rp-td-name { text-align: right; white-space: normal; min-width: 120px; }
+.rp-division-table td.rp-td-name { text-align: left; white-space: normal; min-width: 120px; }
 .rp-division-table tr.rp-row-total td { font-weight: 800; background: #f4f7f5; }
+/* একদম নিচের সামারী সারিতে নাম/লেবেল কলাম ডান দিকে থাকবে */
+.rp-division-table tr.rp-row-total td.rp-td-name { text-align: right; }
 
 .rp-merit-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
 .rp-merit-table th, .rp-merit-table td { border: 1px solid #e5e7eb; padding: 7px 9px; text-align: center; }
 .rp-merit-table thead th { background: var(--rp-green); color: #fff; }
-.rp-merit-table td.rp-td-name { text-align: right; white-space: normal; min-width: 160px; }
+.rp-merit-table td.rp-td-name { text-align: left; white-space: normal; min-width: 160px; }
 .rp-merit-dept-cell { font-weight: 700; background: #f9fbfa; }
 
 /* ================= চার্ট ================= */
