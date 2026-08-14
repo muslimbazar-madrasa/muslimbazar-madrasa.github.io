@@ -377,7 +377,7 @@
                 <td>${s.total !== null && s.total !== undefined ? bn(s.total) : '-'}</td>
                 <td>${s.average !== null && s.average !== undefined ? bn(s.average) : '-'}</td>
                 <td class="${gradeClass(s.grade)}">${esc(s.grade)}</td>
-                <td>${s.merit ? bn(s.merit) : '-'}</td>
+                <td>${s.serial <= 3 ? (Utils.meritLabel(s.serial) || bn(s.serial)) : '-'}</td>
             </tr>`;
         }).join('');
 
