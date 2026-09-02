@@ -5,6 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>madrasa</title>
+    <link href="https://fonts.googleapis.com/earlyaccess/solaimanlipi.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/earlyaccess/kalpurush.css" rel="stylesheet">
+    <style>
+      .site-header {
+        width: 100%;
+        background: #ffffff;
+        padding: 20px 15px;
+      }
+      .calligraphy-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0 20px;
+      }
+      .calligraphy-section img {
+        max-width: 700px;
+        width: 90%;
+        height: auto;
+      }
+      .info-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        flex-wrap: nowrap;
+      }
+      .info-column { flex: 1; }
+      .col-left { text-align: left; }
+      .col-left .title {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: clamp(16px, 2vw, 22px);
+        font-weight: 700;
+        color: #0a3d1f;
+        line-height: 1.3;
+      }
+      .col-left .subtitle {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: clamp(13px, 1.5vw, 17px);
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-top: 5px;
+      }
+      .col-left .contact {
+        font-family: Arial, sans-serif;
+        font-size: clamp(11px, 1.2vw, 14px);
+        color: #333333;
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      .col-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 0 0 auto;
+      }
+      .col-center img {
+        width: clamp(90px, 10vw, 130px);
+        height: clamp(90px, 10vw, 130px);
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .col-right { text-align: right; }
+      .col-right .title {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(16px, 2vw, 22px);
+        font-weight: 700;
+        color: #0a3d1f;
+        line-height: 1.5;
+      }
+      .col-right .subtitle {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(14px, 1.6vw, 18px);
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-top: 5px;
+      }
+      .col-right .contact {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(12px, 1.3vw, 15px);
+        color: #333333;
+        margin-top: 8px;
+        line-height: 1.7;
+      }
+      @media (max-width: 768px) {
+        .info-section { flex-direction: column; text-align: center; }
+        .col-left, .col-right { text-align: center; width: 100%; }
+        .col-center { width: 100%; order: -1; margin-bottom: 10px; }
+        .calligraphy-section img { width: 100%; }
+      }
+      @media (max-width: 480px) {
+        .site-header { padding: 15px 10px; }
+        .info-section { gap: 15px; }
+      }
+    </style>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXWEDQ6C8T"></script>
 <script>
@@ -17,10 +113,37 @@
 </head>
 <body>
 
-    <!-- ১. একেবারে উপরে হেডার: লোগো বা ব্যানার ছবি -->
-    <header class="main-header">
-        <!-- আপনার লোগো বা ব্যানারের ছবির লিংক বা নাম এখানে দিন -->
-        <img src="photo2.jpg" alt="Madrasa Banner" class="header-img">
+    <!-- ১. একেবারে উপরে হেডার: ক্যালিগ্রাফি + ৩-কলাম তথ্য -->
+    <header class="site-header">
+
+        <!-- ক্যালিগ্রাফি সেকশন -->
+        <div class="calligraphy-section">
+            <img src="calligraphy.png" alt="Arabic Calligraphy">
+        </div>
+
+        <!-- ৩-কলাম তথ্য সেকশন -->
+        <div class="info-section">
+
+            <!-- বাম কলাম: ইংরেজি -->
+            <div class="info-column col-left">
+                <div class="title">Shahid Muktijoddha Jamia Emdadia Darul Ulum</div>
+                <div class="subtitle">Shahid Muktijoddha Jam-e- Masjid Complex</div>
+                <div class="contact">12/D, Muslim Bazar, Mirpur, Dhaka-1216.<br>Phone: 01866779448</div>
+            </div>
+
+            <!-- মাঝের কলাম: লোগো -->
+            <div class="info-column col-center">
+                <img src="logo.png" alt="Madrasa Logo">
+            </div>
+
+            <!-- ডান কলাম: বাংলা -->
+            <div class="info-column col-right">
+                <div class="title">শহীদ মুক্তিযোদ্ধা জামিয়া ইমদাদিয়া দারুল উলূম</div>
+                <div class="subtitle">শহীদ মুক্তিযোদ্ধা জামে মসজিদ কমপ্লেক্স</div>
+                <div class="contact">১২/ডি, মুসলিম বাজার, মিরপুর, ঢাকা-১২১৬।<br>ফোন: ০১৮৬৬৭৭৯৪৪৮</div>
+            </div>
+
+        </div>
     </header>
 
     <!-- ২. নেভিগেশন বার: ধূসর রঙের রানিং নোটিশ বোর্ড -->
