@@ -11,94 +11,101 @@
       .site-header {
         width: 100%;
         background: #ffffff;
-        padding: 20px 15px;
+        padding: 25px 20px 30px;
+        border-bottom: 3px solid #0a3d1f;
       }
       .calligraphy-section {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 10px 0 20px;
+        padding: 5px 0 28px;
       }
       .calligraphy-section img {
-        max-width: 700px;
-        width: 90%;
+        max-width: 560px;
+        width: 75%;
         height: auto;
       }
       .info-section {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        gap: 20px;
+        gap: 30px;
         max-width: 1200px;
         margin: 0 auto;
         flex-wrap: nowrap;
       }
-      .info-column { flex: 1; }
+      .info-column { flex: 1 1 0; min-width: 0; }
       .col-left { text-align: left; }
       .col-left .title {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(16px, 2vw, 22px);
+        font-size: clamp(14px, 1.6vw, 18px);
         font-weight: 700;
         color: #0a3d1f;
-        line-height: 1.3;
+        line-height: 1.35;
+        text-wrap: balance;
       }
       .col-left .subtitle {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(13px, 1.5vw, 17px);
+        font-size: clamp(12px, 1.3vw, 15px);
         font-weight: 600;
         color: #1a1a1a;
-        margin-top: 5px;
+        margin-top: 6px;
+        line-height: 1.3;
       }
       .col-left .contact {
         font-family: Arial, sans-serif;
-        font-size: clamp(11px, 1.2vw, 14px);
+        font-size: clamp(11px, 1.1vw, 13px);
         color: #333333;
-        margin-top: 8px;
-        line-height: 1.5;
+        margin-top: 10px;
+        line-height: 1.6;
       }
       .col-center {
         display: flex;
         justify-content: center;
         align-items: center;
         flex: 0 0 auto;
+        padding: 0 10px;
       }
       .col-center img {
-        width: clamp(90px, 10vw, 130px);
-        height: clamp(90px, 10vw, 130px);
+        width: clamp(85px, 9vw, 120px);
+        height: clamp(85px, 9vw, 120px);
         border-radius: 50%;
         object-fit: cover;
       }
       .col-right { text-align: right; }
       .col-right .title {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(16px, 2vw, 22px);
+        font-size: clamp(15px, 1.8vw, 19px);
         font-weight: 700;
         color: #0a3d1f;
         line-height: 1.5;
+        text-wrap: balance;
       }
       .col-right .subtitle {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(14px, 1.6vw, 18px);
+        font-size: clamp(13px, 1.5vw, 16px);
         font-weight: 600;
         color: #1a1a1a;
-        margin-top: 5px;
+        margin-top: 6px;
       }
       .col-right .contact {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(12px, 1.3vw, 15px);
+        font-size: clamp(11px, 1.2vw, 14px);
         color: #333333;
-        margin-top: 8px;
+        margin-top: 10px;
         line-height: 1.7;
       }
       @media (max-width: 768px) {
-        .info-section { flex-direction: column; text-align: center; }
+        .info-section { flex-direction: column; text-align: center; gap: 18px; }
         .col-left, .col-right { text-align: center; width: 100%; }
-        .col-center { width: 100%; order: -1; margin-bottom: 10px; }
-        .calligraphy-section img { width: 100%; }
+        .col-center { width: 100%; order: -1; margin-bottom: 5px; }
+        .calligraphy-section img { width: 90%; max-width: 420px; }
+        .site-header { padding: 20px 15px 25px; }
       }
       @media (max-width: 480px) {
-        .site-header { padding: 15px 10px; }
-        .info-section { gap: 15px; }
+        .site-header { padding: 15px 12px 20px; }
+        .info-section { gap: 14px; }
+        .calligraphy-section { padding: 5px 0 20px; }
       }
     </style>
     <!-- Google tag (gtag.js) -->
