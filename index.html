@@ -11,25 +11,25 @@
       .site-header {
         width: 100%;
         background: #ffffff;
-        padding: 25px 20px 30px;
+        padding: clamp(12px, 3vw, 25px) clamp(10px, 3vw, 20px) clamp(15px, 3.5vw, 30px);
         border-bottom: 3px solid #0a3d1f;
       }
       .calligraphy-section {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 5px 0 28px;
+        padding: clamp(4px, 1.5vw, 5px) 0 clamp(12px, 4vw, 28px);
       }
       .calligraphy-section img {
         max-width: 560px;
-        width: 75%;
+        width: 72%;
         height: auto;
       }
       .info-section {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 30px;
+        gap: clamp(6px, 2.5vw, 30px);
         max-width: 1200px;
         margin: 0 auto;
         flex-wrap: nowrap;
@@ -38,74 +38,68 @@
       .col-left { text-align: left; }
       .col-left .title {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(14px, 1.6vw, 18px);
+        font-size: clamp(9px, 3vw, 18px);
         font-weight: 700;
         color: #0a3d1f;
         line-height: 1.35;
         text-wrap: balance;
+        overflow-wrap: break-word;
       }
       .col-left .subtitle {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(12px, 1.3vw, 15px);
+        font-size: clamp(8px, 2.5vw, 15px);
         font-weight: 600;
         color: #1a1a1a;
-        margin-top: 6px;
+        margin-top: clamp(3px, 1vw, 6px);
         line-height: 1.3;
+        overflow-wrap: break-word;
       }
       .col-left .contact {
         font-family: Arial, sans-serif;
-        font-size: clamp(11px, 1.1vw, 13px);
+        font-size: clamp(7px, 2vw, 13px);
         color: #333333;
-        margin-top: 10px;
+        margin-top: clamp(4px, 1.2vw, 10px);
         line-height: 1.6;
+        overflow-wrap: break-word;
       }
       .col-center {
         display: flex;
         justify-content: center;
         align-items: center;
         flex: 0 0 auto;
-        padding: 0 10px;
+        padding: 0 clamp(4px, 1.5vw, 10px);
       }
       .col-center img {
-        width: clamp(85px, 9vw, 120px);
-        height: clamp(85px, 9vw, 120px);
+        width: clamp(44px, 13vw, 120px);
+        height: clamp(44px, 13vw, 120px);
         border-radius: 50%;
         object-fit: cover;
       }
       .col-right { text-align: right; }
       .col-right .title {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(15px, 1.8vw, 19px);
+        font-size: clamp(9px, 3.2vw, 19px);
         font-weight: 700;
         color: #0a3d1f;
         line-height: 1.5;
         text-wrap: balance;
+        overflow-wrap: break-word;
       }
       .col-right .subtitle {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(13px, 1.5vw, 16px);
+        font-size: clamp(8px, 2.8vw, 16px);
         font-weight: 600;
         color: #1a1a1a;
-        margin-top: 6px;
+        margin-top: clamp(3px, 1vw, 6px);
+        overflow-wrap: break-word;
       }
       .col-right .contact {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(11px, 1.2vw, 14px);
+        font-size: clamp(7px, 2.2vw, 14px);
         color: #333333;
-        margin-top: 10px;
+        margin-top: clamp(4px, 1.2vw, 10px);
         line-height: 1.7;
-      }
-      @media (max-width: 768px) {
-        .info-section { flex-direction: column; text-align: center; gap: 18px; }
-        .col-left, .col-right { text-align: center; width: 100%; }
-        .col-center { width: 100%; order: -1; margin-bottom: 5px; }
-        .calligraphy-section img { width: 90%; max-width: 420px; }
-        .site-header { padding: 20px 15px 25px; }
-      }
-      @media (max-width: 480px) {
-        .site-header { padding: 15px 12px 20px; }
-        .info-section { gap: 14px; }
-        .calligraphy-section { padding: 5px 0 20px; }
+        overflow-wrap: break-word;
       }
     </style>
     <!-- Google tag (gtag.js) -->
