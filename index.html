@@ -25,20 +25,17 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        max-height: clamp(120px, 22vw, 230px);
-        overflow: hidden;
-        padding: 0;
+        padding: 8px;
         margin: 0;
         background: #ffffff;
       }
       .calligraphy-section img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center;
         display: block;
-        margin: 0;
-        padding: 0;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: clamp(140px, 22vw, 230px);
+        margin: 0 auto;
       }
       .info-section {
         display: flex;
@@ -361,8 +358,9 @@
       }
       .link-item:hover .link-text { text-decoration: underline; }
       @media (max-width: 600px) {
-        .footer-card { flex-direction: column; }
-        .footer-col + .footer-col { border-left: none; border-top: 1px solid #d8d8d0; }
+        .footer-card { flex-direction: column-reverse; }
+        .footer-col + .footer-col { border-left: none; }
+        .footer-col:first-child { border-top: 1px solid #d8d8d0; }
       }
       /* style.css এর .main-footer (নেভি ব্যাকগ্রাউন্ড/প্যাডিং) ওভাররাইড, নতুন কার্ড ডিজাইনের জন্য */
       .main-footer {
