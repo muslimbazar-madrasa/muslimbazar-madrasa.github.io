@@ -7,256 +7,6 @@
     <title>madrasa</title>
     <link href="https://fonts.googleapis.com/earlyaccess/solaimanlipi.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/earlyaccess/kalpurush.css" rel="stylesheet">
-    <style>
-      .site-header {
-        width: 100%;
-        background: #ffffff;
-        padding: clamp(12px, 3vw, 25px) clamp(10px, 3vw, 20px) clamp(15px, 3.5vw, 30px);
-        border-bottom: 3px solid #0a3d1f;
-      }
-      .calligraphy-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: clamp(14px, 5vw, 40px) clamp(10px, 3vw, 20px) clamp(16px, 5vw, 36px);
-        box-sizing: border-box;
-      }
-      .calligraphy-section img {
-        width: 100%;
-        max-width: 1100px;
-        height: auto;
-        display: block;
-      }
-      .info-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: clamp(6px, 2.5vw, 30px);
-        max-width: 1200px;
-        margin: 0 auto;
-        flex-wrap: nowrap;
-      }
-      .info-column { flex: 1 1 0; min-width: 0; }
-      .col-left { text-align: left; }
-      .col-left .title {
-        font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(9px, 3vw, 18px);
-        font-weight: 700;
-        color: #0a3d1f;
-        line-height: 1.35;
-        text-wrap: balance;
-        overflow-wrap: break-word;
-      }
-      .col-left .subtitle {
-        font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: clamp(8px, 2.5vw, 15px);
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-top: clamp(3px, 1vw, 6px);
-        line-height: 1.3;
-        overflow-wrap: break-word;
-      }
-      .col-left .contact {
-        font-family: Arial, sans-serif;
-        font-size: clamp(7px, 2vw, 13px);
-        color: #333333;
-        margin-top: clamp(4px, 1.2vw, 10px);
-        line-height: 1.6;
-        overflow-wrap: break-word;
-      }
-      .col-center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 0 0 auto;
-        padding: 0 clamp(4px, 1.5vw, 10px);
-      }
-      .col-center img {
-        width: clamp(44px, 13vw, 120px);
-        height: clamp(44px, 13vw, 120px);
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      .col-right { text-align: right; }
-      .col-right .title {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(9px, 3.2vw, 19px);
-        font-weight: 700;
-        color: #0a3d1f;
-        line-height: 1.5;
-        text-wrap: balance;
-        overflow-wrap: break-word;
-      }
-      .col-right .subtitle {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(8px, 2.8vw, 16px);
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-top: clamp(3px, 1vw, 6px);
-        overflow-wrap: break-word;
-      }
-      .col-right .contact {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(7px, 2.2vw, 14px);
-        color: #333333;
-        margin-top: clamp(4px, 1.2vw, 10px);
-        line-height: 1.7;
-        overflow-wrap: break-word;
-      }
-
-      /* নতুন মেনু ন্যাভবার (চলমান লেখার উপরে) */
-      .main-nav {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: clamp(6px, 1.5vw, 14px);
-        background: #0a3d1f;
-        padding: clamp(8px, 2vw, 12px) clamp(10px, 3vw, 20px);
-      }
-      .hamburger-btn {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.6);
-        border-radius: 6px;
-        color: #ffffff;
-        font-size: clamp(16px, 4vw, 20px);
-        line-height: 1;
-        padding: clamp(6px, 1.4vw, 9px) clamp(10px, 2vw, 14px);
-        cursor: pointer;
-      }
-      .hamburger-btn:hover { background: rgba(255,255,255,0.15); }
-      .nav-right {
-        display: flex;
-        flex-wrap: wrap;
-        gap: clamp(6px, 1.5vw, 12px);
-      }
-      .dropdown-menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: clamp(10px, 3vw, 20px);
-        margin-top: 6px;
-        background: #ffffff;
-        border: 1px solid #0a3d1f;
-        border-radius: 8px;
-        min-width: clamp(160px, 40vw, 220px);
-        flex-direction: column;
-        overflow: hidden;
-        z-index: 30;
-        box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-      }
-      .dropdown-menu.show { display: flex; }
-      .dropdown-menu a.menu-btn {
-        color: #0a3d1f;
-        background: #ffffff;
-        border: none;
-        border-bottom: 1px solid #e3e3e3;
-        border-radius: 0;
-        text-align: right;
-        padding: clamp(8px, 2vw, 11px) clamp(12px, 2.5vw, 16px);
-      }
-      .dropdown-menu a.menu-btn:last-child { border-bottom: none; }
-      .dropdown-menu a.menu-btn:hover,
-      .dropdown-menu a.menu-btn.active {
-        background: #0a3d1f;
-        color: #ffffff;
-      }
-      .main-nav .menu-btn {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(11px, 2.2vw, 15px);
-        font-weight: 600;
-        color: #ffffff;
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.6);
-        border-radius: 6px;
-        padding: clamp(6px, 1.2vw, 9px) clamp(10px, 2vw, 16px);
-        text-decoration: none;
-        white-space: nowrap;
-        transition: background 0.2s ease, color 0.2s ease;
-        display: inline-block;
-      }
-      .nav-right .menu-btn:hover,
-      .nav-right .menu-btn.active {
-        background: #ffffff;
-        color: #0a3d1f;
-      }
-
-      /* চলমান নোটিশ এর জায়গা: লোগো + নিচের দিয়ে বয়ে যাওয়া লেখা */
-      .marquee-wrap {
-        position: relative;
-        display: flex;
-        align-items: center;
-        background: #eef5ee;
-        border-top: 2px solid #0a3d1f;
-        border-bottom: 2px solid #0a3d1f;
-        overflow: hidden;
-        min-height: clamp(38px, 8vw, 56px);
-      }
-      .marquee-wrap marquee {
-        width: 100%;
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        font-size: clamp(12px, 2.6vw, 16px);
-        color: #0a3d1f;
-        font-weight: 600;
-      }
-      .marquee-logo {
-        position: absolute;
-        left: clamp(6px, 2vw, 14px);
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 5;
-        background: #ffffff;
-        border-radius: 50%;
-        padding: 3px;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-      }
-      .marquee-logo img {
-        display: block;
-        height: clamp(28px, 7vw, 46px);
-        width: clamp(28px, 7vw, 46px);
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      /* হোম / মাদ্রাসা পরিচিতি সেকশন */
-      .home-section {
-        position: relative;
-        max-width: 900px;
-        margin: clamp(20px, 5vw, 50px) auto;
-        padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 30px);
-        text-align: center;
-        background: #ffffff;
-        overflow: hidden;
-      }
-      .home-section::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: url('logo.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: clamp(140px, 30vw, 240px);
-        opacity: 0.07;
-        pointer-events: none;
-      }
-      .home-content-inner {
-        position: relative;
-        z-index: 1;
-      }
-      .home-section h2 {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        color: #0a3d1f;
-        font-size: clamp(18px, 4vw, 26px);
-        margin-bottom: clamp(10px, 3vw, 18px);
-      }
-      .home-section p {
-        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
-        color: #333333;
-        font-size: clamp(14px, 3vw, 18px);
-        line-height: 1.8;
-      }
-    </style>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXWEDQ6C8T"></script>
 <script>
@@ -269,48 +19,44 @@
 </head>
 <body>
 
-    <!-- ১. একেবারে উপরে হেডার: ক্যালিগ্রাফি + ৩-কলাম তথ্য -->
-    <header class="site-header">
-
-        <!-- ক্যালিগ্রাফি সেকশন (বড় করে নাম) -->
-        <div class="calligraphy-section">
-            <img src="calligraphy.png" alt="Arabic Calligraphy">
-        </div>
+    <!-- ১. একেবারে উপরে মূল ছবি (ক্যালিগ্রাফি) — স্ক্রিনের চার পাশ স্পর্শ করে -->
+    <header class="main-header">
+        <img src="calligraphy.png" alt="Arabic Calligraphy" class="header-img">
     </header>
 
-    <!-- ২. মূল মেনু ন্যাভবার -->
-    <nav class="main-nav">
-        <button type="button" class="hamburger-btn" onclick="toggleMenu(event)" aria-label="মেনু">&#9776;</button>
+    <!-- নেভিগেশন বার: বিদ্যমান ৯টি বাটন -->
+    <nav class="menu-container">
 
-        <div class="dropdown-menu" id="dropdownMenu">
-            <a href="#" class="menu-btn active" onclick="showHome(event)">মাদ্রাসা পরিচিতি</a>
-            <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
-            <a href="#" class="menu-btn">ছাত্র তালিকা</a>
-            <a href="#" class="menu-btn">হিসাব বিভাগ</a>
-            <a href="#" class="menu-btn"> বোর্ডিং </a>
-            <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
-            <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
-        </div>
+    <a href="#madrasa-porichiti" class="menu-btn">মাদ্রাসা পরিচিতি</a>
 
-        <div class="nav-right">
-            <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
-            <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
-        </div>
+    <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
+
+    <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
+
+    <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
+
+    <a href="#" class="menu-btn">ছাত্র তালিকা</a>
+
+    <a href="#" class="menu-btn">হিসাব বিভাগ</a>
+
+    <a href="#" class="menu-btn"> বোর্ডিং </a>
+
+    <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
+
+    <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
+
     </nav>
 
-    <!-- ৩. চলমান নোটিশ: বাম কর্ণারে লোগো, তার নিচ দিয়ে লেখা চলে যাবে -->
-    <div class="marquee-wrap">
+    <!-- মুভিং টেক্সট / মার্কি বার: ডান থেকে বামে চলবে -->
+    <div class="navbar">
         <marquee behavior="scroll" direction="left" scrollamount="5">
-            <span> ১ম সাময়িক পরীক্ষা ২০২৬ ঈ./ ১৪৪৮ হি. এর ফলাফল দেখতে “পরীক্ষার ফলাফল” বাটনে ক্লিক করুন। </span>
-            <span class="separator">২য় সাময়িক পরীক্ষা ২০২৬ ঈ. আগামী ০৮ অক্টোবর থেকে শুরু হবে।</span>
+            <span> ১ম সাময়িক পরীক্ষা ২০২৬ ঈ./ ১৪৪৮ হি. এর ফলাফল দেখতে "পরীক্ষার ফলাফল" বাটনে ক্লিক করুন। </span>
+            <span class="separator">২য় সাময়িক পরীক্ষা ২০২৬ ঈ. আগামী ০৮ অক্টোবর থেকে শুরু হবে।</span>
             <span>আজীবন সদস্য সম্মেলন ২০২৬ ঈ. আগামী ৩০ অক্টোবর শুক্রবার অনুষ্ঠিত হবে। ইনশাআল্লাহ! </span>
         </marquee>
-        <div class="marquee-logo">
-            <img src="logo.png" alt="Madrasa Logo">
-        </div>
     </div>
 
-    <!-- ৩. মেইন সেকশন:  রেজাল্ট পোর্টাল বক্স -->
+    <!-- রেজাল্ট পোর্টাল বক্স (আপাতত অফ) -->
     <!--<section class="exam-box">
     <h3>কোরবানি পূর্ব পরীক্ষা ২০২৬ ঈ.</h3>
 
@@ -319,37 +65,48 @@
     </a>
     </section>-->
 
-    <!-- ৪. হোম পেজ কন্টেন্ট: মাদ্রাসা পরিচিতি (ডিফল্ট) -->
-    <main id="home-content" class="home-section">
-        <div class="home-content-inner">
-            <h2>মাদ্রাসা পরিচিতি</h2>
-            <p>ওয়েবসাইট ডেভলাপের কাজ চলছে। সাময়িক অসুবিধার জন্য দুঃখিত।</p>
+    <!-- মূল কনটেন্ট এরিয়া: মাদ্রাসা পরিচিতি (আপাতত ডামি তথ্য, পরে হালনাগাদ করা হবে) -->
+    <main class="home-content" id="madrasa-porichiti">
+        <h2 class="section-title">মাদ্রাসা পরিচিতি</h2>
+        <div class="intro-card">
+            <p><em>(এটি একটি ডামি/নমুনা লেখা — প্রকৃত তথ্য পরে যুক্ত করা হবে।)</em></p>
+            <p>শহীদ মুক্তিযোদ্ধা জামিয়া ইমদাদিয়া দারুল উলূম একটি দ্বীনি শিক্ষা প্রতিষ্ঠান, যেখানে কুরআন-সুন্নাহর আলোকে ছাত্রদের নৈতিক ও আধ্যাত্মিক গঠনের পাশাপাশি আধুনিক শিক্ষার সমন্বয়ে একটি পূর্ণাঙ্গ পাঠ্যক্রম অনুসরণ করা হয়।</p>
+            <p>প্রতিষ্ঠানটি হিফজ বিভাগ, কিতাব বিভাগ এবং সাধারণ শিক্ষা কার্যক্রম পরিচালনা করে থাকে, যেখানে অভিজ্ঞ ও যোগ্য শিক্ষকমণ্ডলী ছাত্রদের দ্বীনি ও দুনিয়াবি উভয় জ্ঞানে গড়ে তোলার লক্ষ্যে নিরলসভাবে কাজ করে যাচ্ছেন।</p>
+            <p>মাদ্রাসার লক্ষ্য হলো একটি আদর্শ প্রজন্ম গড়ে তোলা, যারা ইসলামি মূল্যবোধ ধারণ করে সমাজ ও রাষ্ট্র গঠনে ইতিবাচক ভূমিকা রাখতে সক্ষম হবে।</p>
         </div>
     </main>
 
+    <footer class="main-footer">
+        <div class="footer-card">
 
-    
-    
-   <footer class="main-footer">
-        <div class="footer-table">
-            
-            <!-- ১ম রো: কেবল একটি শিরোনাম "যোগাযোগ" যা মাঝখানে থাকবে -->
-            <div class="table-row row-head">
-                <div class="table-cell head-title">যোগাযোগ</div>
+            <!-- বাম কলাম: যোগাযোগ (বিদ্যমান তথ্য অপরিবর্তিত) -->
+            <div class="footer-col footer-col-contact">
+                <h3 class="footer-col-title">যোগাযোগ</h3>
+
+                <div class="contact-item">
+                    <div class="contact-name"><span class="footer-icon">&#128100;</span> মুফতি আবদুল ওয়াহিদ কাসেমি</div>
+                    <div class="contact-desig">মুহতামিমে জামিয়া</div>
+                    <div class="contact-phone"><span class="footer-icon">&#128222;</span> 01815 559802</div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-name"><span class="footer-icon">&#128100;</span> মাওলানা সাদ আবদুল্লাহ মামুন</div>
+                    <div class="contact-desig">নাযেমে তালিমাত</div>
+                    <div class="contact-phone"><span class="footer-icon">&#128222;</span> 01915 689721</div>
+                </div>
             </div>
-            
-            <!-- ২য় রো: মুফতি আবদুল ওয়াহিদ কাসেমি সাহেবের তথ্য -->
-            <div class="table-row">
-                <div class="table-cell name-cell">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
-                <div class="table-cell des-cell">মুহতামিমে জামিয়া</div>
-                <div class="table-cell phone-cell">01815 559802</div>
-            </div>
-            
-            <!-- ৩য় রো: মাওলানা সাদ আবদুল্লাহ মামুন সাহেবের তথ্য -->
-            <div class="table-row">
-                <div class="table-cell name-cell">মাওলানা সাদ আবদুল্লাহ মামুন</div>
-                <div class="table-cell des-cell">নাযেমে তালিমাত</div>
-                <div class="table-cell phone-cell">01915 689721</div>
+
+            <!-- ডান কলাম: প্রয়োজনীয় লিংক সমূহ -->
+            <div class="footer-col footer-col-links">
+                <h3 class="footer-col-title">প্রয়োজনীয় লিংক সমূহ</h3>
+
+                <a class="link-item" href="https://befaqbd.org" target="_blank" rel="noopener noreferrer">
+                    <span class="footer-icon">&#128279;</span> বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ
+                </a>
+
+                <a class="link-item" href="https://alhaiatululya.com" target="_blank" rel="noopener noreferrer">
+                    <span class="footer-icon">&#128279;</span> আল হাইয়াতুল উলয়া লিল জামিয়াতিল কওমিয়া
+                </a>
             </div>
 
         </div>
@@ -357,28 +114,6 @@
 
     <!-- ড্রাইভের পিডিএফ লিংক খোলার স্ক্রিপ্ট -->
     <script>
-    function toggleMenu(e) {
-        if (e) e.stopPropagation();
-        var menu = document.getElementById('dropdownMenu');
-        if (menu) menu.classList.toggle('show');
-    }
-
-    document.addEventListener('click', function (e) {
-        var menu = document.getElementById('dropdownMenu');
-        var btn = document.querySelector('.hamburger-btn');
-        if (!menu) return;
-        if (menu.classList.contains('show') && !menu.contains(e.target) && e.target !== btn) {
-            menu.classList.remove('show');
-        }
-    });
-
-    function showHome(e) {
-        if (e) e.preventDefault();
-        var menu = document.getElementById('dropdownMenu');
-        if (menu) menu.classList.remove('show');
-        document.getElementById('home-content').scrollIntoView({behavior: 'smooth'});
-    }
-
     function goToLink(dropdown) {
         var url = dropdown.value;
         if (!url) return;
