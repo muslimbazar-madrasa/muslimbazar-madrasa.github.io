@@ -11,22 +11,24 @@
       .site-header {
         width: 100%;
         background: #ffffff;
-        padding: clamp(12px, 3vw, 25px) clamp(10px, 3vw, 20px) clamp(15px, 3.5vw, 30px);
+        padding: 0;
+        margin: 0;
         border-bottom: 3px solid #0a3d1f;
+        line-height: 0;
       }
       .calligraphy-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: block;
         width: 100%;
-        padding: clamp(14px, 5vw, 40px) clamp(10px, 3vw, 20px) clamp(16px, 5vw, 36px);
-        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        line-height: 0;
       }
       .calligraphy-section img {
         width: 100%;
-        max-width: 1100px;
         height: auto;
         display: block;
+        margin: 0;
+        padding: 0;
       }
       .info-section {
         display: flex;
@@ -200,16 +202,24 @@
         color: #0a3d1f;
         font-weight: 600;
       }
-      .marquee-logo {
+      .marquee-logo-mask {
         position: absolute;
-        left: clamp(6px, 2vw, 14px);
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: clamp(50px, 12vw, 90px);
+        background: #eef5ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 6;
+        box-shadow: 8px 0 12px -6px rgba(0,0,0,0.25);
+      }
+      .marquee-logo {
         background: #ffffff;
         border-radius: 50%;
         padding: 3px;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+        box-shadow: 0 0 0 2px rgba(10,61,31,0.15);
       }
       .marquee-logo img {
         display: block;
@@ -255,6 +265,106 @@
         color: #333333;
         font-size: clamp(14px, 3vw, 18px);
         line-height: 1.8;
+      }
+
+      /* ফুটার: যোগাযোগ + প্রয়োজনীয় লিংক সমূহ (২ কলাম) */
+      .footer-card {
+        max-width: 1100px;
+        margin: clamp(24px, 5vw, 50px) auto;
+        background: #f5f5f0;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        display: flex;
+        overflow: hidden;
+      }
+      .footer-col {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: clamp(20px, 4vw, 36px);
+      }
+      .footer-col + .footer-col {
+        border-left: 1px solid #d8d8d0;
+      }
+      .footer-col-title {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(18px, 3.2vw, 26px);
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: clamp(14px, 3vw, 22px);
+      }
+      .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(8px, 2vw, 14px);
+        padding: clamp(6px, 1.5vw, 10px) 0;
+      }
+      .contact-icon {
+        font-size: clamp(18px, 3vw, 24px);
+        color: #0a3d1f;
+        line-height: 1;
+        margin-top: 2px;
+      }
+      .contact-name {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-weight: 700;
+        font-size: clamp(15px, 2.6vw, 19px);
+        color: #111111;
+      }
+      .contact-role {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(13px, 2.2vw, 16px);
+        color: #333333;
+        margin-top: 2px;
+      }
+      .contact-phone {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(13px, 2.2vw, 16px);
+        color: #0a3d1f;
+        margin-top: clamp(4px, 1vw, 8px);
+        font-weight: 600;
+      }
+      .item-divider {
+        border: none;
+        border-top: 1px solid #dddddd;
+        margin: clamp(8px, 2vw, 14px) 0;
+      }
+      .link-item {
+        display: flex;
+        align-items: center;
+        gap: clamp(10px, 2vw, 16px);
+        text-decoration: none;
+        padding: clamp(10px, 2vw, 16px) 0;
+      }
+      .link-icon {
+        font-size: clamp(20px, 3.4vw, 28px);
+        color: #0a3d1f;
+        transform: rotate(-45deg);
+      }
+      .link-text {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-weight: 700;
+        font-size: clamp(15px, 2.6vw, 19px);
+        color: #0a3d1f;
+        line-height: 1.4;
+      }
+      .link-item:hover .link-text { text-decoration: underline; }
+      @media (max-width: 600px) {
+        .footer-card { flex-direction: column; }
+        .footer-col + .footer-col { border-left: none; border-top: 1px solid #d8d8d0; }
+      }
+      /* style.css এর .main-footer (নেভি ব্যাকগ্রাউন্ড/প্যাডিং) ওভাররাইড, নতুন কার্ড ডিজাইনের জন্য */
+      .main-footer {
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        border-top: none;
+        width: 100%;
+      }
+      /* style.css এর .navbar marquee .separator এখন আর প্রযোজ্য নয় (ক্লাস পাল্টেছে), তাই এখানে আলাদা স্পেসিং */
+      .marquee-wrap .separator {
+        margin: 0 30px;
       }
     </style>
     <!-- Google tag (gtag.js) -->
@@ -305,8 +415,10 @@
             <span class="separator">২য় সাময়িক পরীক্ষা ২০২৬ ঈ. আগামী ০৮ অক্টোবর থেকে শুরু হবে।</span>
             <span>আজীবন সদস্য সম্মেলন ২০২৬ ঈ. আগামী ৩০ অক্টোবর শুক্রবার অনুষ্ঠিত হবে। ইনশাআল্লাহ! </span>
         </marquee>
-        <div class="marquee-logo">
-            <img src="logo.png" alt="Madrasa Logo">
+        <div class="marquee-logo-mask">
+            <div class="marquee-logo">
+                <img src="logo.png" alt="Madrasa Logo">
+            </div>
         </div>
     </div>
 
@@ -330,26 +442,49 @@
 
     
     
-   <footer class="main-footer">
-        <div class="footer-table">
-            
-            <!-- ১ম রো: কেবল একটি শিরোনাম "যোগাযোগ" যা মাঝখানে থাকবে -->
-            <div class="table-row row-head">
-                <div class="table-cell head-title">যোগাযোগ</div>
+    <footer class="main-footer">
+        <div class="footer-card">
+
+            <!-- বাম কলাম: যোগাযোগ (আগের লেখা অপরিবর্তিত) -->
+            <div class="footer-col">
+                <h3 class="footer-col-title">যোগাযোগ</h3>
+
+                <div class="contact-item">
+                    <span class="contact-icon">&#128100;</span>
+                    <div>
+                        <div class="contact-name">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
+                        <div class="contact-role">মুহতামিমে জামিয়া</div>
+                        <div class="contact-phone">&#128222; 01815 559802</div>
+                    </div>
+                </div>
+
+                <hr class="item-divider">
+
+                <div class="contact-item">
+                    <span class="contact-icon">&#128100;</span>
+                    <div>
+                        <div class="contact-name">মাওলানা সাদ আবদুল্লাহ মামুন</div>
+                        <div class="contact-role">নাযেমে তালিমাত</div>
+                        <div class="contact-phone">&#128222; 01915 689721</div>
+                    </div>
+                </div>
             </div>
-            
-            <!-- ২য় রো: মুফতি আবদুল ওয়াহিদ কাসেমি সাহেবের তথ্য -->
-            <div class="table-row">
-                <div class="table-cell name-cell">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
-                <div class="table-cell des-cell">মুহতামিমে জামিয়া</div>
-                <div class="table-cell phone-cell">01815 559802</div>
-            </div>
-            
-            <!-- ৩য় রো: মাওলানা সাদ আবদুল্লাহ মামুন সাহেবের তথ্য -->
-            <div class="table-row">
-                <div class="table-cell name-cell">মাওলানা সাদ আবদুল্লাহ মামুন</div>
-                <div class="table-cell des-cell">নাযেমে তালিমাত</div>
-                <div class="table-cell phone-cell">01915 689721</div>
+
+            <!-- ডান কলাম: প্রয়োজনীয় লিংক সমূহ -->
+            <div class="footer-col">
+                <h3 class="footer-col-title">প্রয়োজনীয় লিংক সমূহ</h3>
+
+                <a class="link-item" href="https://befaqbd.org" target="_blank" rel="noopener">
+                    <span class="link-icon">&#128279;</span>
+                    <span class="link-text">বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ</span>
+                </a>
+
+                <hr class="item-divider">
+
+                <a class="link-item" href="https://alhaiatululya.com" target="_blank" rel="noopener">
+                    <span class="link-icon">&#128279;</span>
+                    <span class="link-text">আল হাইআতুল উলয়া লিল জামিয়াতিল কওমিয়া</span>
+                </a>
             </div>
 
         </div>
