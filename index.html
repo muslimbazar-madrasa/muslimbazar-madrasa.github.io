@@ -107,12 +107,60 @@
 
       /* নতুন মেনু ন্যাভবার (চলমান লেখার উপরে) */
       .main-nav {
+        position: relative;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        align-items: center;
+        justify-content: space-between;
         gap: clamp(6px, 1.5vw, 14px);
         background: #0a3d1f;
-        padding: clamp(8px, 2vw, 14px) clamp(6px, 2vw, 16px);
+        padding: clamp(8px, 2vw, 12px) clamp(10px, 3vw, 20px);
+      }
+      .hamburger-btn {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.6);
+        border-radius: 6px;
+        color: #ffffff;
+        font-size: clamp(16px, 4vw, 20px);
+        line-height: 1;
+        padding: clamp(6px, 1.4vw, 9px) clamp(10px, 2vw, 14px);
+        cursor: pointer;
+      }
+      .hamburger-btn:hover { background: rgba(255,255,255,0.15); }
+      .nav-right {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(6px, 1.5vw, 12px);
+      }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: clamp(10px, 3vw, 20px);
+        margin-top: 6px;
+        background: #ffffff;
+        border: 1px solid #0a3d1f;
+        border-radius: 8px;
+        min-width: clamp(160px, 40vw, 220px);
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 30;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      }
+      .dropdown-menu.show { display: flex; }
+      .dropdown-menu a.menu-btn {
+        color: #0a3d1f;
+        background: #ffffff;
+        border: none;
+        border-bottom: 1px solid #e3e3e3;
+        border-radius: 0;
+        text-align: right;
+        padding: clamp(8px, 2vw, 11px) clamp(12px, 2.5vw, 16px);
+      }
+      .dropdown-menu a.menu-btn:last-child { border-bottom: none; }
+      .dropdown-menu a.menu-btn:hover,
+      .dropdown-menu a.menu-btn.active {
+        background: #0a3d1f;
+        color: #ffffff;
       }
       .main-nav .menu-btn {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
@@ -126,19 +174,75 @@
         text-decoration: none;
         white-space: nowrap;
         transition: background 0.2s ease, color 0.2s ease;
+        display: inline-block;
       }
-      .main-nav .menu-btn:hover,
-      .main-nav .menu-btn.active {
+      .nav-right .menu-btn:hover,
+      .nav-right .menu-btn.active {
         background: #ffffff;
         color: #0a3d1f;
       }
 
+      /* চলমান নোটিশ এর জায়গা: লোগো + নিচের দিয়ে বয়ে যাওয়া লেখা */
+      .marquee-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #eef5ee;
+        border-top: 2px solid #0a3d1f;
+        border-bottom: 2px solid #0a3d1f;
+        overflow: hidden;
+        min-height: clamp(38px, 8vw, 56px);
+      }
+      .marquee-wrap marquee {
+        width: 100%;
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(12px, 2.6vw, 16px);
+        color: #0a3d1f;
+        font-weight: 600;
+      }
+      .marquee-logo {
+        position: absolute;
+        left: clamp(6px, 2vw, 14px);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        background: #ffffff;
+        border-radius: 50%;
+        padding: 3px;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+      }
+      .marquee-logo img {
+        display: block;
+        height: clamp(28px, 7vw, 46px);
+        width: clamp(28px, 7vw, 46px);
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
       /* হোম / মাদ্রাসা পরিচিতি সেকশন */
       .home-section {
+        position: relative;
         max-width: 900px;
         margin: clamp(20px, 5vw, 50px) auto;
         padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 30px);
         text-align: center;
+        background: #ffffff;
+        overflow: hidden;
+      }
+      .home-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('logo.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: clamp(140px, 30vw, 240px);
+        opacity: 0.07;
+        pointer-events: none;
+      }
+      .home-content-inner {
+        position: relative;
+        z-index: 1;
       }
       .home-section h2 {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
@@ -174,27 +278,37 @@
         </div>
     </header>
 
-    <!-- ২. মূল মেনু ন্যাভবার: এখানে বাটনগুলো থাকবে (চলমান লেখার উপরে) -->
+    <!-- ২. মূল মেনু ন্যাভবার -->
     <nav class="main-nav">
-        <a href="#" class="menu-btn active" onclick="showHome(event)">মাদ্রাসা পরিচিতি</a>
-        <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
-        <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
-        <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
-        <a href="#" class="menu-btn">ছাত্র তালিকা</a>
-        <a href="#" class="menu-btn">হিসাব বিভাগ</a>
-        <a href="#" class="menu-btn"> বোর্ডিং </a>
-        <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
-        <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
+        <button type="button" class="hamburger-btn" onclick="toggleMenu(event)" aria-label="মেনু">&#9776;</button>
+
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="#" class="menu-btn active" onclick="showHome(event)">মাদ্রাসা পরিচিতি</a>
+            <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
+            <a href="#" class="menu-btn">ছাত্র তালিকা</a>
+            <a href="#" class="menu-btn">হিসাব বিভাগ</a>
+            <a href="#" class="menu-btn"> বোর্ডিং </a>
+            <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
+            <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
+            <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
+        </div>
     </nav>
 
-    <!-- ৩. নেভিগেশন বার: ধূসর রঙের রানিং নোটিশ বোর্ড -->
-    <nav class="navbar">
+    <!-- ৩. চলমান নোটিশ: বাম কর্ণারে লোগো, তার নিচ দিয়ে লেখা চলে যাবে -->
+    <div class="marquee-wrap">
         <marquee behavior="scroll" direction="left" scrollamount="5">
             <span> ১ম সাময়িক পরীক্ষা ২০২৬ ঈ./ ১৪৪৮ হি. এর ফলাফল দেখতে “পরীক্ষার ফলাফল” বাটনে ক্লিক করুন। </span>
             <span class="separator">২য় সাময়িক পরীক্ষা ২০২৬ ঈ. আগামী ০৮ অক্টোবর থেকে শুরু হবে।</span>
             <span>আজীবন সদস্য সম্মেলন ২০২৬ ঈ. আগামী ৩০ অক্টোবর শুক্রবার অনুষ্ঠিত হবে। ইনশাআল্লাহ! </span>
         </marquee>
-    </nav>
+        <div class="marquee-logo">
+            <img src="logo.png" alt="Madrasa Logo">
+        </div>
+    </div>
 
     <!-- ৩. মেইন সেকশন:  রেজাল্ট পোর্টাল বক্স -->
     <!--<section class="exam-box">
@@ -207,8 +321,10 @@
 
     <!-- ৪. হোম পেজ কন্টেন্ট: মাদ্রাসা পরিচিতি (ডিফল্ট) -->
     <main id="home-content" class="home-section">
-        <h2>মাদ্রাসা পরিচিতি</h2>
-        <p>ওয়েবসাইট ডেভলাপের কাজ চলছে। সাময়িক অসুবিধার জন্য দুঃখিত।</p>
+        <div class="home-content-inner">
+            <h2>মাদ্রাসা পরিচিতি</h2>
+            <p>ওয়েবসাইট ডেভলাপের কাজ চলছে। সাময়িক অসুবিধার জন্য দুঃখিত।</p>
+        </div>
     </main>
 
 
@@ -241,8 +357,25 @@
 
     <!-- ড্রাইভের পিডিএফ লিংক খোলার স্ক্রিপ্ট -->
     <script>
+    function toggleMenu(e) {
+        if (e) e.stopPropagation();
+        var menu = document.getElementById('dropdownMenu');
+        if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function (e) {
+        var menu = document.getElementById('dropdownMenu');
+        var btn = document.querySelector('.hamburger-btn');
+        if (!menu) return;
+        if (menu.classList.contains('show') && !menu.contains(e.target) && e.target !== btn) {
+            menu.classList.remove('show');
+        }
+    });
+
     function showHome(e) {
         if (e) e.preventDefault();
+        var menu = document.getElementById('dropdownMenu');
+        if (menu) menu.classList.remove('show');
         document.getElementById('home-content').scrollIntoView({behavior: 'smooth'});
     }
 
