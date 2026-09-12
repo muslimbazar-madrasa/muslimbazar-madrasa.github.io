@@ -104,6 +104,54 @@
         line-height: 1.7;
         overflow-wrap: break-word;
       }
+
+      /* নতুন মেনু ন্যাভবার (চলমান লেখার উপরে) */
+      .main-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(6px, 1.5vw, 14px);
+        background: #0a3d1f;
+        padding: clamp(8px, 2vw, 14px) clamp(6px, 2vw, 16px);
+      }
+      .main-nav .menu-btn {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        font-size: clamp(11px, 2.2vw, 15px);
+        font-weight: 600;
+        color: #ffffff;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.6);
+        border-radius: 6px;
+        padding: clamp(6px, 1.2vw, 9px) clamp(10px, 2vw, 16px);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+      .main-nav .menu-btn:hover,
+      .main-nav .menu-btn.active {
+        background: #ffffff;
+        color: #0a3d1f;
+      }
+
+      /* হোম / মাদ্রাসা পরিচিতি সেকশন */
+      .home-section {
+        max-width: 900px;
+        margin: clamp(20px, 5vw, 50px) auto;
+        padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 30px);
+        text-align: center;
+      }
+      .home-section h2 {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        color: #0a3d1f;
+        font-size: clamp(18px, 4vw, 26px);
+        margin-bottom: clamp(10px, 3vw, 18px);
+      }
+      .home-section p {
+        font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
+        color: #333333;
+        font-size: clamp(14px, 3vw, 18px);
+        line-height: 1.8;
+      }
     </style>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXWEDQ6C8T"></script>
@@ -120,37 +168,26 @@
     <!-- ১. একেবারে উপরে হেডার: ক্যালিগ্রাফি + ৩-কলাম তথ্য -->
     <header class="site-header">
 
-        <!-- ক্যালিগ্রাফি সেকশন -->
+        <!-- ক্যালিগ্রাফি সেকশন (বড় করে নাম) -->
         <div class="calligraphy-section">
             <img src="calligraphy.png" alt="Arabic Calligraphy">
         </div>
-
-        <!-- ৩-কলাম তথ্য সেকশন -->
-        <div class="info-section">
-
-            <!-- বাম কলাম: ইংরেজি -->
-            <div class="info-column col-left">
-                <div class="title">Shahid Muktijoddha Jamia Emdadia Darul Ulum</div>
-                <div class="subtitle">Shahid Muktijoddha Jam-e- Masjid Complex</div>
-                <div class="contact">12/D, Muslim Bazar, Mirpur, Dhaka-1216.<br>Phone: 01866779448</div>
-            </div>
-
-            <!-- মাঝের কলাম: লোগো -->
-            <div class="info-column col-center">
-                <img src="logo.png" alt="Madrasa Logo">
-            </div>
-
-            <!-- ডান কলাম: বাংলা -->
-            <div class="info-column col-right">
-                <div class="title">শহীদ মুক্তিযোদ্ধা জামিয়া ইমদাদিয়া দারুল উলূম</div>
-                <div class="subtitle">শহীদ মুক্তিযোদ্ধা জামে মসজিদ কমপ্লেক্স</div>
-                <div class="contact">১২/ডি, মুসলিম বাজার, মিরপুর, ঢাকা-১২১৬।<br>ফোন: ০১৮৬৬৭৭৯৪৪৮</div>
-            </div>
-
-        </div>
     </header>
 
-    <!-- ২. নেভিগেশন বার: ধূসর রঙের রানিং নোটিশ বোর্ড -->
+    <!-- ২. মূল মেনু ন্যাভবার: এখানে বাটনগুলো থাকবে (চলমান লেখার উপরে) -->
+    <nav class="main-nav">
+        <a href="#" class="menu-btn active" onclick="showHome(event)">মাদ্রাসা পরিচিতি</a>
+        <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
+        <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
+        <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
+        <a href="#" class="menu-btn">ছাত্র তালিকা</a>
+        <a href="#" class="menu-btn">হিসাব বিভাগ</a>
+        <a href="#" class="menu-btn"> বোর্ডিং </a>
+        <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
+        <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
+    </nav>
+
+    <!-- ৩. নেভিগেশন বার: ধূসর রঙের রানিং নোটিশ বোর্ড -->
     <nav class="navbar">
         <marquee behavior="scroll" direction="left" scrollamount="5">
             <span> ১ম সাময়িক পরীক্ষা ২০২৬ ঈ./ ১৪৪৮ হি. এর ফলাফল দেখতে “পরীক্ষার ফলাফল” বাটনে ক্লিক করুন। </span>
@@ -168,27 +205,11 @@
     </a>
     </section>-->
 
-    <div class="menu-container">
-
-    <a href="#" class="menu-btn">মাদ্রাসা পরিচিতি</a>
-
-    <a href="result/index.html" class="menu-btn">পরীক্ষার ফলাফল</a>
-
-    <a href="#" class="menu-btn">নোটিশ বোর্ড</a>
-
-    <a href="#" class="menu-btn">শিক্ষক-স্টাফ</a>
-
-    <a href="#" class="menu-btn">ছাত্র তালিকা</a>
-
-    <a href="#" class="menu-btn">হিসাব বিভাগ</a>
-        
-    <a href="#" class="menu-btn"> বোর্ডিং </a>
-
-    <a href="#" class="menu-btn">প্রকাশনা বিভাগ</a>
-
-    <a href="#" class="menu-btn">আল ইমদাদ কাফেলা</a>
-
-</div>
+    <!-- ৪. হোম পেজ কন্টেন্ট: মাদ্রাসা পরিচিতি (ডিফল্ট) -->
+    <main id="home-content" class="home-section">
+        <h2>মাদ্রাসা পরিচিতি</h2>
+        <p>ওয়েবসাইট ডেভলাপের কাজ চলছে। সাময়িক অসুবিধার জন্য দুঃখিত।</p>
+    </main>
 
 
     
@@ -220,6 +241,11 @@
 
     <!-- ড্রাইভের পিডিএফ লিংক খোলার স্ক্রিপ্ট -->
     <script>
+    function showHome(e) {
+        if (e) e.preventDefault();
+        document.getElementById('home-content').scrollIntoView({behavior: 'smooth'});
+    }
+
     function goToLink(dropdown) {
         var url = dropdown.value;
         if (!url) return;
