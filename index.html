@@ -360,7 +360,6 @@
         position: relative;
         z-index: 2;
       }
-      .intro-toggle-btn::before { content: "····················· "; color: #b9b9a8; }
       .intro-toggle-btn:hover { text-decoration: underline; }
 
       /* ফুটার: যোগাযোগ + প্রয়োজনীয় লিংক সমূহ (২ কলাম) */
@@ -392,7 +391,7 @@
         display: flex;
         align-items: flex-start;
         gap: clamp(8px, 2vw, 14px);
-        padding: clamp(6px, 1.5vw, 10px) 0;
+        padding: clamp(4px, 1vw, 6px) 0;
       }
       .contact-icon {
         font-size: clamp(18px, 3vw, 24px);
@@ -403,8 +402,9 @@
       .contact-name {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
         font-weight: 700;
-        font-size: clamp(15px, 2.6vw, 19px);
+        font-size: clamp(14px, 2.4vw, 18px);
         color: #111111;
+        line-height: 1.4;
       }
       .contact-role {
         font-family: 'SolaimanLipi', 'Kalpurush', sans-serif;
@@ -418,20 +418,20 @@
         gap: 6px;
         font-size: clamp(13px, 2.2vw, 16px);
         color: #0a3d1f;
-        margin-top: clamp(4px, 1vw, 8px);
+        margin-top: clamp(2px, 0.6vw, 4px);
         font-weight: 600;
       }
       .item-divider {
         border: none;
         border-top: 1px solid #dddddd;
-        margin: clamp(8px, 2vw, 14px) 0;
+        margin: clamp(4px, 1vw, 8px) 0;
       }
       .link-item {
         display: flex;
         align-items: center;
         gap: clamp(10px, 2vw, 16px);
         text-decoration: none;
-        padding: clamp(10px, 2vw, 16px) 0;
+        padding: clamp(4px, 1vw, 8px) 0;
       }
       .link-icon {
         font-size: clamp(20px, 3.4vw, 28px);
@@ -534,7 +534,7 @@
 
             <div class="intro-header">
                 <h2>জামিয়া ইমদাদিয়া : ইতিহাস ঐতিহ্য-অবদান</h2>
-                <!--<p class="intro-author">মাওলানা সাদ আবদুল্লাহ মামুন</p>-->
+               <!-- <p class="intro-author">মাওলানা সাদ আবদুল্লাহ মামুন</p> -->
             </div>
 
             <div class="intro-collapsible" id="introContent">
@@ -576,7 +576,7 @@
                 <div class="intro-signature">
                     <p>
                         মাওলানা সাদ আবদুল্লাহ মামুন<br>
-                        মুহাদ্দিস ও নাযেমে তালিমাত, মুসলিম বাজার মাদরাসা<br>
+                        মুহাদ্দিস, মুসলিম বাজার মাদরাসা<br>
                         মিরপুর-১২ ঢাকা
                     </p>
                 </div>
@@ -601,8 +601,7 @@
                 <div class="contact-item">
                     <span class="contact-icon">&#128100;</span>
                     <div>
-                        <div class="contact-name">মুফতি আবদুল ওয়াহিদ কাসেমি</div>
-                        <div class="contact-role">মুহতামিমে জামিয়া</div>
+                        <div class="contact-name">মুফতি আবদুল ওয়াহিদ কাসেমি - মুহতামিমে জামিয়া</div>
                         <div class="contact-phone">&#128222; 01815 559802</div>
                     </div>
                 </div>
@@ -612,8 +611,7 @@
                 <div class="contact-item">
                     <span class="contact-icon">&#128100;</span>
                     <div>
-                        <div class="contact-name">মাওলানা সাদ আবদুল্লাহ মামুন</div>
-                        <div class="contact-role">নাযেমে তালিমাত</div>
+                        <div class="contact-name">মাওলানা সাদ আবদুল্লাহ মামুন - নাযেমে তালিমাত</div>
                         <div class="contact-phone">&#128222; 01915 689721</div>
                     </div>
                 </div>
@@ -630,7 +628,7 @@
 
                 <hr class="item-divider">
 
-                <a class="link-item" href="https://alhaiatululya.com" target="_blank" rel="noopener">
+                <a class="link-item" href="https://hems.alhaiatululya.org" target="_blank" rel="noopener">
                     <span class="link-icon">&#128279;</span>
                     <span class="link-text">আল হাইআতুল উলয়া লিল জামিয়াতিল কওমিয়া</span>
                 </a>
@@ -713,9 +711,7 @@
             wrap.classList.toggle('collapsed');
             wrap.dataset.userExpanded = wrap.classList.contains('collapsed') ? '' : '1';
             btn.textContent = wrap.classList.contains('collapsed') ? 'বিস্তারিত দেখুন' : 'সংক্ষিপ্ত করুন';
-            if (!wrap.classList.contains('collapsed')) {
-                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            /* পেজ স্ক্রল না করে শুধু জায়গায় থেকে বাকি লেখা দেখাবে */
         });
 
         window.addEventListener('resize', refresh);
