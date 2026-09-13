@@ -14,7 +14,7 @@ const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyDdAToPlz
 //    devtools > Application > Local Storage and edit "noticeboard_notices"
 //    by hand to test new content instantly, with no network call at all.
 //    Set this back to false before deploying live.
-const LOCAL_TEST_MODE = true;
+const LOCAL_TEST_MODE = false;
 const LOCAL_STORAGE_KEY = "noticeboard_notices";
 const MAX_PINNED = 3; // at most this many notices can stay pinned to the top
 
