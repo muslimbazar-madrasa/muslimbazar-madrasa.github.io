@@ -55,7 +55,7 @@ body {
 .site-header {
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #F4F1E8;
-  padding: 2.25rem 1.5rem 2.5rem;
+  padding: 1.1rem 1.25rem;
 }
 
 .header-inner {
@@ -114,14 +114,16 @@ body {
 .controls-inner {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   display: flex;
-  gap: 0.9rem;
-  flex-wrap: wrap;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .search-box {
-  flex: 1 1 280px;
+  flex: 1 1 auto;
+  min-width: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -158,27 +160,37 @@ body {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+}
+
+.filter-icon {
+  display: none;
+  width: 18px;
+  height: 18px;
+  color: var(--color-ink-soft);
+  flex: 0 0 auto;
 }
 
 .filter-label {
   font-size: 0.88rem;
   color: var(--color-ink-soft);
+  white-space: nowrap;
 }
 
 .filter-box select {
-  padding: 0.6rem 2rem 0.6rem 0.85rem;
+  padding: 0.6rem 1.9rem 0.6rem 0.7rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--color-ink);
   cursor: pointer;
   appearance: none;
+  max-width: 40vw;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%235A6156' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 0.8rem center;
+  background-position: right 0.7rem center;
 }
 
 .filter-box select:focus {
@@ -191,8 +203,8 @@ body {
 .main-content {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
-  min-height: 40vh;
+  padding: 1.25rem 1.25rem 2.5rem;
+  min-height: 30vh;
 }
 
 .notice-grid {
@@ -304,7 +316,7 @@ body {
   color: var(--color-ink-soft);
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -352,11 +364,34 @@ body {
   isolation: isolate;
 }
 
-.modal-close {
+.modal-actions {
   position: absolute;
   top: 0.75rem;
   right: 0.9rem;
   z-index: 5;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modal-pdf-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0 0.9rem;
+  height: 34px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  cursor: pointer;
+}
+.modal-pdf-btn svg { width: 15px; height: 15px; }
+.modal-pdf-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.modal-close {
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--color-border);
   width: 34px;
@@ -438,6 +473,7 @@ body {
   color: var(--color-primary-dark);
   margin: 0.7rem 0 0.3rem;
   line-height: 1.4;
+  text-align: center;
 }
 
 .pad-date {
@@ -469,6 +505,10 @@ body {
   flex-wrap: wrap;
 }
 
+.signature-block.two {
+  justify-content: space-between;
+}
+
 .signature-item {
   display: flex;
   flex-direction: column;
@@ -497,19 +537,19 @@ body {
   color: var(--color-ink);
 }
 
-.signature-role {
-  margin: 0.1rem 0 0;
+.signature-date {
+  margin: 0.15rem 0 0;
   font-size: 0.78rem;
   color: var(--color-ink-soft);
 }
 
 /* ===================== Responsive ===================== */
 @media (max-width: 640px) {
-  .header-inner { gap: 0.8rem; }
-  .header-crest { width: 44px; height: 44px; }
-  .controls-inner { flex-direction: column; align-items: stretch; }
-  .filter-box { justify-content: space-between; }
-  .filter-box select { flex: 1; }
+  .header-inner { gap: 0.7rem; }
+  .header-crest { width: 42px; height: 42px; }
+  .filter-label { display: none; }
+  .filter-icon { display: block; }
+  .filter-box select { max-width: 34vw; padding-left: 0; font-size: 0.85rem; }
   .signature-block { justify-content: center; gap: 1.5rem; }
   .modal-overlay { padding: 0; align-items: flex-end; }
   .notice-pad { max-width: 100%; border-radius: var(--radius-card) var(--radius-card) 0 0; max-height: 92vh; overflow-y: auto; }
@@ -517,4 +557,23 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .notice-card, .modal-overlay, .spinner { animation: none; transition: none; }
+}
+
+/* ===================== Print / "Save as PDF" ===================== */
+/* Triggered by the PDF button, which calls window.print(). Everything
+   except the open notice pad is hidden, so the browser's print/PDF
+   dialog produces just the notice itself. */
+@media print {
+  body * { visibility: hidden; }
+  .notice-pad, .notice-pad * { visibility: visible; }
+  .notice-pad {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .modal-overlay { position: static; background: none; padding: 0; }
+  .modal-actions, .pad-watermark { display: none; }
 }
