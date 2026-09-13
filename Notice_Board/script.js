@@ -16,6 +16,7 @@ const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyDdAToPlz
 //    Set this back to false before deploying live.
 const LOCAL_TEST_MODE = false;
 const LOCAL_STORAGE_KEY = "noticeboard_notices";
+const CACHE_KEY = "noticeboard_cache"; // last-known-good copy of the live API data, used for instant repeat loads
 const MAX_PINNED = 3; // at most this many notices can stay pinned to the top
 
 const SAMPLE_NOTICES = [
@@ -68,16 +69,47 @@ const modalCategory = document.getElementById("modalCategory");
 const modalTitle = document.getElementById("modalTitle");
 const modalDate = document.getElementById("modalDate");
 const modalDetails = document.getElementById("modalDetails");
-const signatureBlock = document.getElementById("signatureBlock");
 
 document.getElementById("footerYear").textContent = new Date().getFullYear();
 
 // ---- Fetch notices: local test mode (localStorage) or the live Sheet API ----
+// The Apps Script Web App has an unavoidable cold-start delay on its own end,
+// so the spinner used to sit on screen for every single visit. To make repeat
+// visits feel instant, we cache the last successful API response: if a cache
+// exists it's shown right away (no spinner), and a fresh copy is fetched
+// quietly in the background and swapped in once it arrives. The spinner is
+// only shown on a person's very first visit, when there is nothing to show yet.
 async function loadNotices() {
+  if (LOCAL_TEST_MODE) {
+    showLoading(true);
+    try {
+      const rows = await loadFromLocalStorage();
+      allNotices = rows.map(normalizeNotice);
+      applyFilters();
+    } catch (err) {
+      console.error("Failed to load notices:", err);
+      noticeGrid.innerHTML = `<p class="empty-state">নোটিশ লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</p>`;
+    } finally {
+      showLoading(false);
+    }
+    return;
+  }
+
+  const cached = readCache();
+  if (cached) {
+    // Show the cached copy immediately, no spinner, then refresh quietly.
+    allNotices = cached.map(normalizeNotice);
+    applyFilters();
+    refreshFromApiInBackground();
+    return;
+  }
+
+  // No cache yet (first-ever visit on this device) — show the spinner while
+  // we wait for the live API.
   showLoading(true);
   try {
-    const rows = LOCAL_TEST_MODE ? await loadFromLocalStorage() : await loadFromApi();
-
+    const rows = await loadFromApi();
+    writeCache(rows);
     allNotices = rows.map(normalizeNotice);
     applyFilters();
   } catch (err) {
@@ -85,6 +117,37 @@ async function loadNotices() {
     noticeGrid.innerHTML = `<p class="empty-state">নোটিশ লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</p>`;
   } finally {
     showLoading(false);
+  }
+}
+
+// Fetches the live data without touching the spinner or blocking the UI;
+// updates the grid + cache in place if the fetch succeeds, and silently
+// keeps the already-visible cached notices if it fails.
+async function refreshFromApiInBackground() {
+  try {
+    const rows = await loadFromApi();
+    writeCache(rows);
+    allNotices = rows.map(normalizeNotice);
+    applyFilters();
+  } catch (err) {
+    console.error("Background refresh failed, keeping cached notices:", err);
+  }
+}
+
+function readCache() {
+  try {
+    const stored = localStorage.getItem(CACHE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeCache(rows) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(rows));
+  } catch (err) {
+    // Storage full or unavailable — not critical, just skip caching.
   }
 }
 
@@ -207,8 +270,6 @@ function openModal(notice) {
   modalDate.textContent = formatDate(notice.Date);
   modalDetails.textContent = notice.Details;
 
-  renderSignatureBlock(notice.Signature_Type, notice.Date);
-
   noticeModal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
   modalClose.focus();
@@ -226,30 +287,6 @@ noticeModal.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !noticeModal.classList.contains("hidden")) closeModal();
 });
-
-// ---- Dynamic signature + date rendering ----
-function renderSignatureBlock(signatureType, date) {
-  const muhtamim = `
-    <div class="signature-item">
-      <div class="signature-img-placeholder">স্বাক্ষর</div>
-      <p class="signature-name">মুহতামিম</p>
-      <p class="signature-role">Muhtamim</p>
-    </div>`;
-
-  const nazem = `
-    <div class="signature-item">
-      <div class="signature-img-placeholder">স্বাক্ষর</div>
-      <p class="signature-name">নাযেমে তালীমাত</p>
-      <p class="signature-role">Nazem-e-Taleemat</p>
-    </div>`;
-
-  if (signatureType === "both") {
-    signatureBlock.innerHTML = nazem + muhtamim;
-  } else {
-    // default: muhtamim only
-    signatureBlock.innerHTML = muhtamim;
-  }
-}
 
 // ---- Helpers ----
 function slugifyCategory(category) {
