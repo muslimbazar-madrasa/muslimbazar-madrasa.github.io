@@ -27,8 +27,8 @@
   --color-default: #5A6156;
   --color-default-bg: #E9E7DC;
 
-  --font-display: "Noto Serif Bengali", "Georgia", serif;
-  --font-body: "Hind Siliguri", "Segoe UI", sans-serif;
+  --font-display: "Kalpurush", "Noto Serif Bengali", "Georgia", serif;
+  --font-body: "Kalpurush", "Hind Siliguri", "Segoe UI", sans-serif;
 
   --radius-card: 10px;
   --radius-sm: 6px;
@@ -453,8 +453,8 @@ body {
   width: 260px;
   height: 260px;
   transform: translate(-50%, -50%);
-  color: var(--color-primary);
-  opacity: 0.05;
+  object-fit: contain;
+  opacity: 0.07;
   z-index: 0;
   pointer-events: none;
 }
@@ -489,60 +489,6 @@ body {
   white-space: pre-line;
 }
 
-/* Signature footer */
-.pad-footer {
-  position: relative;
-  z-index: 1;
-  padding: 1.2rem 1.8rem 1.8rem;
-  border-top: 1px dashed var(--color-border);
-  margin-top: 0.5rem;
-}
-
-.signature-block {
-  display: flex;
-  justify-content: flex-end;
-  gap: 2.5rem;
-  flex-wrap: wrap;
-}
-
-.signature-block.two {
-  justify-content: space-between;
-}
-
-.signature-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.signature-img-placeholder {
-  width: 120px;
-  height: 52px;
-  border-bottom: 1px solid var(--color-ink-soft);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 0.2rem;
-  font-family: var(--font-display);
-  font-style: italic;
-  color: var(--color-ink-soft);
-  font-size: 0.85rem;
-}
-
-.signature-name {
-  margin: 0.4rem 0 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.signature-date {
-  margin: 0.15rem 0 0;
-  font-size: 0.78rem;
-  color: var(--color-ink-soft);
-}
-
 /* ===================== Responsive ===================== */
 @media (max-width: 640px) {
   .header-inner { gap: 0.7rem; }
@@ -550,7 +496,6 @@ body {
   .filter-label { display: none; }
   .filter-icon { display: block; }
   .filter-box select { max-width: 34vw; padding-left: 0; font-size: 0.85rem; }
-  .signature-block { justify-content: center; gap: 1.5rem; }
   .modal-overlay { padding: 0; align-items: flex-end; }
   .notice-pad { max-width: 100%; border-radius: var(--radius-card) var(--radius-card) 0 0; max-height: 92vh; overflow-y: auto; }
 }
