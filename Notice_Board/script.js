@@ -6,7 +6,7 @@
    ========================================================= */
 
 // 1) Paste your deployed Google Apps Script Web App URL here.
-const GOOGLE_SHEET_API_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyDdAToPlz4wwhwmm6Y8zWzXxIa-QdnkIQ-ImRMs0PDAHke1gdXcl0M-RWVAggTKAWZ/exec";
 
 // 2) Local test mode — flip this to true to try the site before your
 //    Apps Script backend is ready or before pushing to GitHub Pages.
