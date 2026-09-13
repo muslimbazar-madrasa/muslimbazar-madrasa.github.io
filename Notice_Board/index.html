@@ -42,13 +42,16 @@
       </div>
 
       <div class="filter-box">
+        <svg class="filter-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 5h16M7 12h10M10 19h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
         <label for="categoryFilter" class="filter-label">বিভাগ</label>
         <select id="categoryFilter" aria-label="বিভাগ অনুযায়ী ফিল্টার করুন">
           <option value="all">সকল বিভাগ</option>
-          <option value="Exam">পরীক্ষা (Exam)</option>
-          <option value="Exam Fee">পরীক্ষার ফি (Exam Fee)</option>
-          <option value="Holiday">ছুটি / বন্ধ (Holiday)</option>
-          <option value="Program">প্রোগ্রাম (Program)</option>
+          <option value="Exam">পরীক্ষা</option>
+          <option value="Exam Fee">পরীক্ষার ফি</option>
+          <option value="Holiday">ছুটি/বন্ধ</option>
+          <option value="Program">প্রোগ্রাম</option>
         </select>
       </div>
     </div>
@@ -79,7 +82,16 @@
   <!-- ===== Modal: Notice Pad ===== -->
   <div id="noticeModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="notice-pad">
-      <button id="modalClose" class="modal-close" aria-label="বন্ধ করুন">&times;</button>
+      <div class="modal-actions">
+        <button id="modalDownloadPdf" class="modal-pdf-btn" aria-label="পিডিএফ ডাউনলোড করুন">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          পিডিএফ
+        </button>
+        <button id="modalClose" class="modal-close" aria-label="বন্ধ করুন">&times;</button>
+      </div>
 
       <!-- Letterhead banner -->
       <div class="pad-letterhead">
