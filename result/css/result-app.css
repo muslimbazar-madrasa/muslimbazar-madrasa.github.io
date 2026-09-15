@@ -1,33 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
 /**
  * result-app.css
  * ------------------------------------------------------------
  * পাবলিক ফলাফল অ্যাপের স্টাইল। সব ক্লাস "rp-" প্রিফিক্স দিয়ে লেখা।
+ *
+ * ডিজাইন ভাষা: মাদরাসা/মসজিদ স্থাপত্যের খিলান (arch) ও কার্নিশ (cornice)
+ * থেকে অনুপ্রাণিত — হোম কার্ডের খিলান-আকৃতির শীর্ষ এবং টপবারের নিচে
+ * সোনালি জিগজ্যাগ কার্নিশ-রেখা এই থিমের দুটি স্বাক্ষর উপাদান।
+ * বাকি সবকিছু (টেবিল, ফর্ম, রিপোর্ট) ইচ্ছাকৃতভাবে শান্ত ও পরিষ্কার
+ * রাখা হয়েছে, যাতে রেজাল্ট/মার্কশিট পড়তে সহজ হয় এবং প্রিন্টেও ভালো
+ * দেখায়।
  * ------------------------------------------------------------
  */
 
 :root {
     --rp-green: #0f6e4f;
-    --rp-green-dark: #0c5940;
-    --rp-green-light: #16a34a;
-    --rp-ink: #1f2a44;
+    --rp-green-dark: #0a4a34;
+    --rp-green-light: #16a468;
+    --rp-gold: #c8912a;
+    --rp-gold-light: #f0c368;
+    --rp-cream: #faf7ef;
+    --rp-ink: #1f2a3d;
     --rp-muted: #6b7280;
-    --rp-border: #dfe4e0;
-    --rp-bg: #eef2f0;
+    --rp-border: #e5decb;
+    --rp-bg: #f3f0e6;
 
     /* নিচের ভ্যারিয়েবলগুলো js/settings.js থেকে নিয়ন্ত্রিত হয় (settings-panel দিয়ে বদলানো যায়) */
-    --rp-font-family: 'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif;
+    --rp-font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'SolaimanLipi', Arial, sans-serif;
     --rp-font-size-base: 14px;
     --rp-name-align: left;       /* left | center | right — নাম/বিষয় কলামের এলাইনমেন্ট */
     --rp-vert-header-height: auto; /* auto অথবা px মান, যেমন 92px */
+
+    /* শুধু হেডিং/শিরোনামের জন্য — settings.js এটি বদলায় না */
+    --rp-heading-font: 'Noto Serif Bengali', 'Noto Serif', Georgia, serif;
 }
 
 * { box-sizing: border-box; }
 
 body {
     margin: 0;
-    background: var(--rp-bg);
     color: var(--rp-ink);
     font-family: var(--rp-font-family);
+    background-color: var(--rp-bg);
+    background-image:
+        repeating-linear-gradient(45deg, rgba(15,110,79,0.05) 0, rgba(15,110,79,0.05) 1px, transparent 1px, transparent 25px),
+        repeating-linear-gradient(-45deg, rgba(15,110,79,0.05) 0, rgba(15,110,79,0.05) 1px, transparent 1px, transparent 25px);
+    background-attachment: fixed;
 }
 
 /* ================= টপ নেভিগেশন বার ================= */
@@ -41,46 +60,65 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    background: linear-gradient(135deg, var(--rp-green), var(--rp-green-dark));
+    background: linear-gradient(120deg, var(--rp-green-dark) 0%, var(--rp-green) 55%, var(--rp-green-light) 100%);
     color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    padding: 12px 20px 16px;
+    box-shadow: 0 6px 18px rgba(10, 40, 30, 0.22);
 }
-.rp-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.rp-topbar { position: sticky; }
+.rp-topbar::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -7px; height: 7px;
+    background:
+        linear-gradient(135deg, var(--rp-gold) 25%, transparent 25%) 0 0,
+        linear-gradient(225deg, var(--rp-gold) 25%, transparent 25%) 0 0;
+    background-size: 14px 14px;
+    opacity: 0.75;
+}
+.rp-topbar { position: sticky; }
+.rp-brand { display: flex; align-items: center; gap: 12px; min-width: 0; position: relative; }
 .rp-brand-logo {
-    width: 46px; height: 46px; border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     object-fit: cover; background: #fff; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.5);
+    border: 2px solid rgba(255,255,255,0.55);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 .rp-brand-text { min-width: 0; }
 .rp-brand-name {
-    font-weight: 800; font-size: 15px; line-height: 1.3;
+    font-family: var(--rp-heading-font);
+    font-weight: 700; font-size: 16.5px; line-height: 1.3;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    letter-spacing: 0.2px;
 }
-.rp-brand-addr { font-size: 11.5px; opacity: 0.9; }
+.rp-brand-addr { font-size: 11.5px; opacity: 0.88; margin-top: 1px; }
 
 .rp-nav { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .rp-nav-btn {
-    border: none; background: rgba(255,255,255,0.12); color: #fff;
-    font-weight: 600; font-size: 13px; padding: 8px 14px;
+    border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.10); color: #fff;
+    font-weight: 600; font-size: 13px; padding: 8px 15px;
     border-radius: 999px; cursor: pointer; white-space: nowrap;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, transform 0.15s ease, border-color .15s ease;
 }
-.rp-nav-btn:hover { background: rgba(255,255,255,0.24); }
-.rp-nav-btn.active { background: #fff; color: var(--rp-green-dark); }
+.rp-nav-btn:hover { background: rgba(255,255,255,0.24); transform: translateY(-1px); }
+.rp-nav-btn.active { background: #fff; color: var(--rp-green-dark); border-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
 .rp-nav-home {
-    border: none; background: transparent; color: #eafff2;
+    border: none; background: transparent; color: var(--rp-gold-light);
     font-size: 12px; text-decoration: none; padding: 6px 8px;
-    opacity: 0.9;
+    opacity: 0.95; font-weight: 600;
 }
 .rp-nav-home:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rp-nav-btn, .rp-card, .rp-dept-btn, .rp-btn, .rp-back, .rp-print-btn { transition: none !important; }
+}
 
 /* ================= কনটেইনার / সাধারণ কার্ড ================= */
 
 .rp-wrap {
     max-width: 980px;
-    margin: 22px auto;
-    padding: 0 16px 40px;
+    margin: 28px auto;
+    padding: 0 16px 48px;
 }
 
 .rp-status {
@@ -88,142 +126,191 @@ body {
     margin: 16px auto;
     padding: 12px 16px;
     border-radius: 10px;
-    background: #fff8e1;
+    background: #fdf3d9;
     color: #7a5b00;
     text-align: center;
     font-size: 14px;
+    border: 1px solid #f0dda0;
 }
-.rp-status-error { background: #fdecea; color: #b3261e; }
+.rp-status-error { background: #fdecea; color: #b3261e; border-color: #f6c6c1; }
 
 .rp-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: 18px;
 }
 @media (max-width: 520px) { .rp-cards { grid-template-columns: 1fr; } }
-.rp-card {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 26px 12px; border: none; border-radius: 16px; background: #fff;
-    box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1);
-    cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.rp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20, 20, 60, 0.16); }
-.rp-card-icon { font-size: 30px; }
-.rp-card-title { font-size: 16px; font-weight: 700; color: var(--rp-ink); }
-.rp-card-sub { font-size: 12px; color: var(--rp-muted); }
 
-.rp-backbar { margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.rp-back {
-    border: none; background: #fff; color: var(--rp-ink); font-weight: 600;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
-    box-shadow: 0 2px 8px rgba(20,20,60,0.1);
+/* খিলান-আকৃতির (arch-shaped) হোম কার্ড — মসজিদ স্থাপত্যের সিগনেচার রূপ */
+.rp-card {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 34px 14px 24px; border: 1px solid var(--rp-border);
+    border-radius: 90px 90px 16px 16px; background: #fff;
+    box-shadow: 0 6px 18px rgba(15, 60, 45, 0.10);
+    cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.rp-back:hover { background: #f3f6f4; }
+.rp-card:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(15, 60, 45, 0.18); }
+.rp-card:focus-visible, .rp-nav-btn:focus-visible, .rp-btn:focus-visible,
+.rp-dept-btn:focus-visible, .rp-group-btn:focus-visible, .rp-back:focus-visible {
+    outline: 3px solid var(--rp-gold); outline-offset: 2px;
+}
+.rp-card-icon {
+    font-size: 26px; width: 58px; height: 58px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: linear-gradient(150deg, var(--rp-gold-light), var(--rp-gold));
+    box-shadow: 0 4px 10px rgba(200, 145, 42, 0.35);
+    margin-bottom: 2px;
+}
+.rp-card-title { font-family: var(--rp-heading-font); font-size: 16px; font-weight: 700; color: var(--rp-ink); text-align: center; }
+.rp-card-sub { font-size: 12px; color: var(--rp-muted); text-align: center; }
+.rp-card:nth-child(1) .rp-card-icon { background: linear-gradient(150deg, #4fd398, var(--rp-green)); box-shadow: 0 4px 10px rgba(15,110,79,0.3); }
+.rp-card:nth-child(3) .rp-card-icon { background: linear-gradient(150deg, #7fb9e8, #2f6ea8); box-shadow: 0 4px 10px rgba(47,110,168,0.3); }
+.rp-card:nth-child(4) .rp-card-icon { background: linear-gradient(150deg, #d99bd9, #8a3f96); box-shadow: 0 4px 10px rgba(138,63,150,0.3); }
+
+.rp-backbar { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rp-back {
+    border: 1px solid var(--rp-border); background: #fff; color: var(--rp-ink); font-weight: 600;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(20,20,60,0.08);
+    transition: background .15s ease, transform .15s ease;
+}
+.rp-back:hover { background: #f3f6f4; transform: translateX(-2px); }
 
 .rp-print-btn {
-    border: none; background: var(--rp-green); color: #fff; font-weight: 600;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    border: none; background: linear-gradient(135deg, var(--rp-green), var(--rp-green-dark)); color: #fff; font-weight: 600;
+    padding: 9px 20px; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 10px rgba(15,110,79,0.3);
+    transition: filter .15s ease;
 }
-.rp-print-btn:hover { background: var(--rp-green-dark); }
+.rp-print-btn:hover { filter: brightness(1.08); }
 
-.rp-panel { background: #fff; border-radius: 16px; padding: 22px; box-shadow: 0 4px 14px rgba(20, 20, 60, 0.1); }
-.rp-panel-title { font-size: 18px; font-weight: 700; color: var(--rp-ink); margin: 0 0 18px; text-align: center; position: relative; padding-bottom: 10px; }
+.rp-panel {
+    background: #fff; border-radius: 18px; padding: 26px;
+    box-shadow: 0 8px 24px rgba(15, 60, 45, 0.10);
+    border: 1px solid var(--rp-border);
+    position: relative; overflow: hidden;
+}
+.rp-panel::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, var(--rp-green-dark), var(--rp-green), var(--rp-gold));
+}
+.rp-panel-title {
+    font-family: var(--rp-heading-font); font-size: 19px; font-weight: 700; color: var(--rp-ink);
+    margin: 4px 0 20px; text-align: center; position: relative; padding-bottom: 12px;
+}
+.rp-panel-title::before {
+    content: ''; position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%) rotate(45deg);
+    width: 7px; height: 7px; background: var(--rp-gold);
+}
 .rp-panel-title::after {
     content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 70px; height: 3px; background: #e9a227; border-radius: 3px;
+    width: 64px; height: 2px; background: linear-gradient(90deg, transparent, var(--rp-gold), transparent); border-radius: 3px;
 }
 
 /* বিভাগ নির্বাচন */
-.rp-dept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.rp-dept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 @media (max-width: 560px) { .rp-dept-grid { grid-template-columns: 1fr; } }
 .rp-dept-btn {
-    padding: 18px 10px; border: none; border-radius: 14px;
+    padding: 20px 10px; border: none; border-radius: 16px;
     background: linear-gradient(135deg, var(--rp-green-light), var(--rp-green-dark));
     color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
-    box-shadow: 0 4px 12px rgba(15,110,79,0.25);
+    box-shadow: 0 6px 14px rgba(15,110,79,0.28);
+    transition: filter .15s ease, transform .15s ease;
 }
-.rp-dept-btn:hover { filter: brightness(1.08); }
+.rp-dept-btn:hover { filter: brightness(1.08); transform: translateY(-2px); }
 
 /* জামাত/গ্রুপ নির্বাচন */
 .rp-group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 @media (max-width: 560px) { .rp-group-grid { grid-template-columns: repeat(2, 1fr); } }
 .rp-group-btn {
-    padding: 14px 8px; border: 1px solid #d7e3da; border-radius: 10px;
-    background: #f4faf6; color: #14532d; font-weight: 600; font-size: 14px; cursor: pointer;
+    padding: 15px 8px; border: 1px solid var(--rp-border); border-radius: 12px;
+    background: #f7faf7; color: #14532d; font-weight: 600; font-size: 14px; cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
 }
-.rp-group-btn:hover { background: #e5f5ea; }
-.rp-group-btn-all { grid-column: 1 / -1; background: #eaf1ff; border-color: #cddcff; color: #1e3a8a; }
+.rp-group-btn:hover { background: #e5f5ea; border-color: var(--rp-green-light); }
+.rp-group-btn-all { grid-column: 1 / -1; background: #eef4ff; border-color: #c9daf5; color: #1e3a8a; }
 
 /* সার্চ ফর্ম */
 .rp-form-label { font-size: 13px; color: var(--rp-muted); margin: 0 0 6px; font-weight: 600; }
 .rp-form-row { margin-bottom: 16px; }
-.rp-search-row { display: flex; gap: 10px; }
+.rp-search-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .rp-input, .rp-select {
-    flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #d7dbe3;
-    font-size: 15px; font-family: inherit; background: #fff;
+    flex: 1; min-width: 180px; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--rp-border);
+    font-size: 15px; font-family: inherit; background: #fdfcf9;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rp-input:focus, .rp-select:focus {
+    outline: none; border-color: var(--rp-gold); box-shadow: 0 0 0 3px rgba(200,145,42,0.18);
 }
 .rp-btn {
-    padding: 12px 22px; border: none; border-radius: 10px; background: var(--rp-green);
-    color: #fff; font-weight: 700; cursor: pointer;
+    padding: 12px 24px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, var(--rp-green), var(--rp-green-dark));
+    color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(15,110,79,0.25);
+    transition: filter .15s ease;
 }
-.rp-btn:hover { background: var(--rp-green-dark); }
-.rp-empty { text-align: center; color: var(--rp-muted); padding: 20px 0; }
+.rp-btn:hover { filter: brightness(1.08); }
+.rp-empty { text-align: center; color: var(--rp-muted); padding: 24px 0; }
 
 /* ================= রিপোর্ট হেডার (মাদরাসার নাম/ঠিকানা/পরীক্ষা) ================= */
 
-.rp-report-head { text-align: center; margin-bottom: 18px; position: relative; }
+.rp-report-head { text-align: center; margin-bottom: 20px; position: relative; padding-bottom: 14px; border-bottom: 1px dashed var(--rp-border); }
 .rp-report-logo {
-    width: 66px; height: 66px; border-radius: 50%; object-fit: cover;
-    display: block; margin: 0 auto 6px;
+    width: 68px; height: 68px; border-radius: 50%; object-fit: cover;
+    display: block; margin: 0 auto 8px; border: 2px solid var(--rp-gold-light);
 }
-.rp-report-name { font-size: 20px; font-weight: 800; color: var(--rp-green); margin: 0; }
-.rp-report-addr { font-size: 13px; color: var(--rp-muted); margin: 2px 0 8px; }
+.rp-report-name { font-family: var(--rp-heading-font); font-size: 21px; font-weight: 800; color: var(--rp-green-dark); margin: 0; }
+.rp-report-addr { font-size: 13px; color: var(--rp-muted); margin: 3px 0 9px; }
 .rp-report-exam { font-size: 14.5px; font-weight: 700; color: var(--rp-ink); margin: 0; }
-.rp-report-subtitle { font-size: 14px; font-weight: 700; color: var(--rp-green-dark); margin-top: 4px; }
+.rp-report-subtitle { font-size: 14px; font-weight: 700; color: var(--rp-gold); margin-top: 5px; }
 
 /* ================= ব্যক্তিগত ফলাফল (মার্কশিট) ================= */
 
-.rp-personal-card { border: 1px solid #eef0f3; border-radius: 14px; padding: 20px; margin-top: 8px; }
+.rp-personal-card { border: 1px solid var(--rp-border); border-radius: 16px; padding: 22px; margin-top: 8px; }
 
-.rp-info-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
-.rp-info-table td { border: 1px solid var(--rp-border); padding: 8px 12px; }
-.rp-info-table td.rp-info-label { background: #f4f7f5; font-weight: 700; width: 20%; color: var(--rp-ink); }
+.rp-info-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 14px; border-radius: 10px; overflow: hidden; }
+.rp-info-table td { border: 1px solid var(--rp-border); padding: 9px 13px; }
+.rp-info-table td.rp-info-label { background: #f4f7ef; font-weight: 700; width: 20%; color: var(--rp-green-dark); }
 .rp-info-table td.rp-info-value { width: 30%; }
 
 .rp-subject-table { width: 100%; border-collapse: collapse; font-size: var(--rp-font-size-base); }
-.rp-subject-table th, .rp-subject-table td { border: 1px solid var(--rp-border); padding: 8px 10px; text-align: center; }
-.rp-subject-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
+.rp-subject-table th, .rp-subject-table td { border: 1px solid var(--rp-border); padding: 9px 11px; text-align: center; }
+.rp-subject-table thead th { background: var(--rp-green-dark); color: #fff; font-weight: 700; }
 .rp-subject-table td.rp-td-name { text-align: var(--rp-name-align); }
-.rp-subject-table tfoot td { font-weight: 700; background: #f4f7f5; }
-.rp-subject-table tfoot td.rp-foot-label { text-align: right; background: #eef2f0; }
+.rp-subject-table tbody tr:nth-child(even) { background: #f8faf6; }
+.rp-subject-table tfoot td { font-weight: 700; background: #eef4ea; }
+.rp-subject-table tfoot td.rp-foot-label { text-align: right; background: #e7f0e5; }
 
-.rp-sign-row { display: flex; justify-content: space-between; gap: 24px; margin-top: 36px; flex-wrap: wrap; }
+.rp-sign-row { display: flex; justify-content: space-between; gap: 24px; margin-top: 40px; flex-wrap: wrap; }
 .rp-sign-block { flex: 1 1 200px; text-align: center; }
 .rp-sign-line { border-top: 1px solid #333; padding-top: 6px; font-size: 13px; font-weight: 600; }
 .rp-sign-date { font-size: 12px; color: var(--rp-muted); margin-top: 2px; }
 
-.rp-note { font-size: 11.5px; color: var(--rp-muted); margin-top: 18px; line-height: 1.6; border-top: 1px dashed var(--rp-border); padding-top: 10px; }
+.rp-note { font-size: 11.5px; color: var(--rp-muted); margin-top: 18px; line-height: 1.7; border-top: 1px dashed var(--rp-border); padding-top: 10px; }
 
-.rp-grade-pass { color: var(--rp-green-dark); font-weight: 700; }
-.rp-grade-fail { color: #b3261e; font-weight: 700; }
-.rp-grade-special { color: #92610a; font-weight: 700; }
+.rp-grade-pass, .rp-grade-fail, .rp-grade-special {
+    display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 13px;
+}
+.rp-grade-pass { color: #0a4a34; background: #e2f5ea; }
+.rp-grade-fail { color: #8c1d16; background: #fbe6e4; }
+.rp-grade-special { color: #7a5205; background: #fbeece; }
 
 /* ================= জামাত/গ্রুপ-ভিত্তিক ফলাফল টেবিল ================= */
 
 .rp-jamah-summary-box {
-    display: inline-flex; flex-direction: column; gap: 3px;
-    border: 1px solid var(--rp-border); border-radius: 8px; background: #f9fbfa;
-    padding: 10px 14px; font-size: 12px; margin: 0 auto 16px; text-align: left;
+    display: inline-flex; flex-direction: column; gap: 4px;
+    border: 1px solid var(--rp-border); border-radius: 12px; background: #f9faf6;
+    padding: 12px 16px; font-size: 12px; margin: 0 auto 18px; text-align: left;
+    box-shadow: 0 2px 8px rgba(15,60,45,0.06);
 }
-.rp-jamah-summary-box div { display: flex; justify-content: space-between; gap: 14px; }
+.rp-jamah-summary-box div { display: flex; justify-content: space-between; gap: 16px; }
 .rp-jamah-summary-box b { color: var(--rp-green-dark); }
 
-.rp-table-wrap { overflow-x: auto; }
+.rp-table-wrap { overflow-x: auto; border-radius: 10px; }
 .rp-table { width: 100%; border-collapse: collapse; font-size: calc(var(--rp-font-size-base) - 1px); }
 .rp-table th, .rp-table td {
-    border: 1px solid #e5e7eb; padding: 6px 8px; text-align: center; white-space: nowrap;
+    border: 1px solid #e6e2d3; padding: 7px 9px; text-align: center; white-space: nowrap;
 }
-.rp-table thead th { background: var(--rp-green); color: #fff; font-weight: 700; }
+.rp-table thead th { background: var(--rp-green-dark); color: #fff; font-weight: 700; position: sticky; top: 0; }
+.rp-table tbody tr:nth-child(even) { background: #f8faf6; }
+.rp-table tbody tr:hover { background: #eef6ef; }
 .rp-table .rp-td-name { text-align: var(--rp-name-align); white-space: normal; min-width: 130px; }
 .rp-table-sm td, .rp-table-sm th { white-space: normal; }
 /* একদম নিচের সামারী সারিতে নাম কলাম ডান দিকে থাকবে (settings দিয়ে বদলায় না) */
@@ -240,35 +327,36 @@ body {
     font-size: 12px;
 }
 
-.rp-table tfoot td { font-weight: 700; background: #f4f7f5; }
+.rp-table tfoot td { font-weight: 700; background: #eef4ea; }
 
 /* ================= এক নজরে ফলাফল (সম্মিলিত রিপোর্ট) ================= */
 
-.rp-glance-title { font-size: 16px; font-weight: 800; text-align: center; color: var(--rp-ink); margin: 22px 0 10px; }
+.rp-glance-title { font-family: var(--rp-heading-font); font-size: 17px; font-weight: 800; text-align: center; color: var(--rp-ink); margin: 26px 0 12px; }
 .rp-division-title {
-    font-size: 14px; font-weight: 700; color: #fff; background: var(--rp-green-dark);
-    padding: 7px 12px; border-radius: 8px 8px 0 0; margin-top: 20px;
+    font-size: 14px; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--rp-green-dark), var(--rp-green));
+    padding: 8px 14px; border-radius: 10px 10px 0 0; margin-top: 22px;
 }
 .rp-division-table-wrap { overflow-x: auto; }
 .rp-division-table { width: 100%; border-collapse: collapse; font-size: calc(var(--rp-font-size-base) - 1.5px); }
-.rp-division-table th, .rp-division-table td { border: 1px solid #e5e7eb; padding: 6px 7px; text-align: center; }
-.rp-division-table thead th { background: #eef2f0; color: var(--rp-ink); }
+.rp-division-table th, .rp-division-table td { border: 1px solid #e6e2d3; padding: 6px 7px; text-align: center; }
+.rp-division-table thead th { background: #f0ede0; color: var(--rp-ink); }
 .rp-division-table td.rp-td-name { text-align: var(--rp-name-align); white-space: normal; min-width: 120px; }
-.rp-division-table tr.rp-row-total td { font-weight: 800; background: #f4f7f5; }
+.rp-division-table tbody tr:nth-child(even):not(.rp-row-total) { background: #f8faf6; }
+.rp-division-table tr.rp-row-total td { font-weight: 800; background: #eef4ea; }
 /* একদম নিচের সামারী সারিতে নাম/লেবেল কলাম ডান দিকে থাকবে (settings দিয়ে বদলায় না) */
 .rp-division-table tr.rp-row-total td.rp-td-name { text-align: right; }
 
 .rp-merit-table { width: 100%; border-collapse: collapse; font-size: calc(var(--rp-font-size-base) - 1px); margin-top: 4px; }
-.rp-merit-table th, .rp-merit-table td { border: 1px solid #e5e7eb; padding: 7px 9px; text-align: center; }
-.rp-merit-table thead th { background: var(--rp-green); color: #fff; }
+.rp-merit-table th, .rp-merit-table td { border: 1px solid #e6e2d3; padding: 8px 10px; text-align: center; }
+.rp-merit-table thead th { background: var(--rp-green-dark); color: #fff; }
 .rp-merit-table td.rp-td-name { text-align: var(--rp-name-align); white-space: normal; min-width: 160px; }
-.rp-merit-dept-cell { font-weight: 700; background: #f9fbfa; }
+.rp-merit-dept-cell { font-weight: 700; background: #f9faf6; color: var(--rp-green-dark); }
 
 /* ================= চার্ট ================= */
 
-.rp-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.rp-chart-wrap canvas { max-width: 100%; }
-.rp-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; font-size: 13px; }
+.rp-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.rp-chart-wrap canvas { max-width: 100%; filter: drop-shadow(0 4px 10px rgba(15,60,45,0.12)); }
+.rp-legend { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; font-size: 13px; }
 .legend-item { display: flex; align-items: center; gap: 6px; }
 .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 
@@ -276,8 +364,10 @@ body {
 
 @media print {
     .rp-topbar, .rp-backbar, .rp-print-btn, #rpStatus, .rp-page-header { display: none !important; }
-    body { background: #fff; }
+    body { background: #fff !important; background-image: none !important; }
     .rp-wrap { max-width: 100%; margin: 0; padding: 0; }
-    .rp-panel { box-shadow: none; padding: 0; border-radius: 0; }
+    .rp-panel { box-shadow: none; padding: 0; border-radius: 0; border: none; }
+    .rp-panel::before { display: none; }
     .rp-personal-card { border: none; padding: 0; }
+    .rp-table thead th { position: static; }
 }
