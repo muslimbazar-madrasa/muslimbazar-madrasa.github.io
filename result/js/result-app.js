@@ -144,44 +144,12 @@
     }
 
     // ---------------------- নেভিগেশন / ভিউ কাঠামো ----------------------
-
-    function renderHome() {
-        app.innerHTML = `
-        <div class="rp-cards">
-            <button class="rp-card" data-view="search">
-                <span class="rp-card-icon">🔍</span>
-                <span class="rp-card-title">ব্যক্তিগত ফলাফল</span>
-                <span class="rp-card-sub">রোল নম্বর দিয়ে খুঁজুন</span>
-            </button>
-            <button class="rp-card" data-view="jamah">
-                <span class="rp-card-icon">📋</span>
-                <span class="rp-card-title">জামাত/গ্রুপ-ভিত্তিক ফলাফল</span>
-                <span class="rp-card-sub">সম্পূর্ণ তালিকা দেখুন</span>
-            </button>
-            <button class="rp-card" data-view="glance">
-                <span class="rp-card-icon">📊</span>
-                <span class="rp-card-title">এক নজরে ফলাফল</span>
-                <span class="rp-card-sub">সারসংক্ষেপ সারণি</span>
-            </button>
-            <button class="rp-card" data-view="chart">
-                <span class="rp-card-icon">🥧</span>
-                <span class="rp-card-title">ফলাফল পাইচার্ট</span>
-                <span class="rp-card-sub">গ্রাফের মাধ্যমে ফলাফল</span>
-            </button>
-        </div>`;
-        app.querySelectorAll('[data-view]').forEach(btn => {
-            btn.addEventListener('click', () => go(btn.dataset.view));
-        });
-        setActiveNav('home');
-    }
+    // এখন আর আলাদা "হোম" ড্যাশবোর্ড নেই — উপরের নেভবারের চারটি ট্যাবের
+    // একটি সবসময় সক্রিয় থাকে এবং সেই ট্যাবেরই ভেতরের বাটন/ফর্ম সরাসরি
+    // দেখানো হয়। প্রথম লোডে ডিফল্ট ট্যাব: জামাত ভিত্তিক ফলাফল।
 
     function backBar(label) {
         return `<div class="rp-backbar"><button class="rp-back" id="rpBack">← ${esc(label)}</button></div>`;
-    }
-
-    function attachBack() {
-        const b = document.getElementById('rpBack');
-        if (b) b.addEventListener('click', renderHome);
     }
 
     function departmentPicker() {
@@ -237,7 +205,7 @@
     // ---------------------- ১. ব্যক্তিগত ফলাফল (রোল সার্চ) ----------------------
 
     function renderSearch() {
-        app.innerHTML = backBar('হোম') + `
+        app.innerHTML = `
         <div class="rp-panel">
             <h2 class="rp-panel-title">ব্যক্তিগত ফলাফল</h2>
             <div class="rp-form-row">
@@ -249,7 +217,6 @@
             </div>
             <div id="rpSearchResult"></div>
         </div>`;
-        attachBack();
         setActiveNav('search');
 
         const input = document.getElementById('rpRollInput');
@@ -329,8 +296,7 @@
     // ---------------------- ২. জামাত/গ্রুপ-ভিত্তিক ফলাফল ----------------------
 
     function renderJamahDeptPicker() {
-        app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
-        attachBack();
+        app.innerHTML = `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
         setActiveNav('jamah');
         bindDeptPicker(dept => renderJamahGroupPicker(dept));
     }
@@ -502,7 +468,7 @@
 
         const cfg = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
 
-        app.innerHTML = backBar('হোম') + `
+        app.innerHTML = `
         <div class="rp-panel">
             ${reportHeadHTML()}
             <div class="rp-glance-title">এক নজরে ${esc(cfg.examName || '')} - এর ফলাফল</div>
@@ -513,15 +479,13 @@
             ${combinedMeritTableHTML()}
             ${printButtonHTML()}
         </div>`;
-        document.getElementById('rpBack').addEventListener('click', renderHome);
         setActiveNav('glance');
     }
 
     // ---------------------- ৪. পাইচার্ট ----------------------
 
     function renderChartDeptPicker() {
-        app.innerHTML = backBar('হোম') + `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
-        attachBack();
+        app.innerHTML = `<h2 class="rp-panel-title">বিভাগ নির্বাচন করুন</h2>` + departmentPicker();
         setActiveNav('chart');
         bindDeptPicker(dept => renderChartGroupPicker(dept));
     }
@@ -582,17 +546,16 @@
     function go(view) {
         loadData().then(() => {
             if (view === 'search') renderSearch();
-            else if (view === 'jamah') renderJamahDeptPicker();
             else if (view === 'glance') renderGlanceReport();
             else if (view === 'chart') renderChartDeptPicker();
-            else renderHome();
+            else renderJamahDeptPicker(); // ডিফল্ট ট্যাব: জামাত ভিত্তিক ফলাফল
         }).catch(() => { /* setStatus ইতিমধ্যে এরর দেখাচ্ছে */ });
     }
 
     // ---------------------- শুরু ----------------------
+    // প্রথম লোডে সরাসরি "জামাত ভিত্তিক ফলাফল" ট্যাবের পেজ দেখানো হয়
 
     initBrand();
     attachTopNav();
-    renderHome();
-    loadData().catch(() => { /* হোমপেইজেই এরর বার্তা থাকবে statusBox-এ */ });
+    go('jamah');
 })();
