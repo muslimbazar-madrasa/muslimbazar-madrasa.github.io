@@ -195,6 +195,32 @@ function fmtDateBn(iso){
   return `${toBn(d.getDate())} ${gregMonthNamesBn[d.getMonth()]}`;
 }
 
+// Formats a date range the way the reference calendar does:
+// single day  -> "১৭ মার্চ - মঙ্গলবার"
+// same-month range -> "১৯, ২০, ২১, ২২, ২৩ ও ২৪ মার্চ - বৃহঃবার থেকে মঙ্গলবার"
+// cross-month range -> "১৯ মার্চ (বৃহঃবার) থেকে ২ এপ্রিল (বৃহঃবার)"
+function formatDateRangeBn(startISO, endISO){
+  const start = new Date(startISO + 'T00:00:00');
+  const end = new Date(endISO + 'T00:00:00');
+
+  if(startISO === endISO){
+    return `${toBn(start.getDate())} ${gregMonthNamesBn[start.getMonth()]} - ${weekdayFullBn[start.getDay()]}`;
+  }
+
+  if(start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()){
+    const days = [];
+    let cur = new Date(start);
+    while(cur <= end){ days.push(cur.getDate()); cur.setDate(cur.getDate() + 1); }
+    const bnDays = days.map(toBn);
+    const daysStr = bnDays.length === 1
+      ? bnDays[0]
+      : bnDays.slice(0, -1).join(', ') + ' ও ' + bnDays[bnDays.length - 1];
+    return `${daysStr} ${gregMonthNamesBn[start.getMonth()]} - ${weekdayFullBn[start.getDay()]} থেকে ${weekdayFullBn[end.getDay()]}`;
+  }
+
+  return `${toBn(start.getDate())} ${gregMonthNamesBn[start.getMonth()]} (${weekdayFullBn[start.getDay()]}) থেকে ${toBn(end.getDate())} ${gregMonthNamesBn[end.getMonth()]} (${weekdayFullBn[end.getDay()]})`;
+}
+
 function renderEventsList(){
   const list = document.getElementById('eventsList');
   list.innerHTML = '';
@@ -219,7 +245,7 @@ function renderEventsList(){
     const item = document.createElement('div');
     item.className = 'event-item';
     item.style.borderLeftColor = meta.accent;
-    const dateLabel = r.start === r.end ? fmtDateBn(r.start) : `${fmtDateBn(r.start)} - ${fmtDateBn(r.end)}`;
+    const dateLabel = formatDateRangeBn(r.start, r.end);
     item.innerHTML = `
       <span class="ev-cat" style="background:${meta.bg};color:${meta.text}">${meta.label}</span>
       <div class="ev-date">${dateLabel}</div>
@@ -243,10 +269,12 @@ function openDayModal(key){
     html += `<div class="modal-events">`;
     dayEvents.forEach(ev => {
       const meta = CATEGORY_META[ev.category];
-      const rangeNote = ev.rangeStart !== ev.rangeEnd ? ` (${fmtDateBn(ev.rangeStart)} - ${fmtDateBn(ev.rangeEnd)})` : '';
+      const rangeLine = ev.rangeStart !== ev.rangeEnd
+        ? `<div class="ev-date">${formatDateRangeBn(ev.rangeStart, ev.rangeEnd)}</div>` : '';
       html += `<div class="modal-event-row">
         <span class="ev-cat" style="background:${meta.bg};color:${meta.text}">${meta.label}</span>
-        <div class="ev-title">${ev.title}${ev.description ? ' — '+ev.description : ''}${rangeNote}</div>
+        ${rangeLine}
+        <div class="ev-title">${ev.title}${ev.description ? ' — '+ev.description : ''}</div>
       </div>`;
     });
     html += `</div>`;
