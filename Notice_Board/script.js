@@ -95,9 +95,10 @@ async function loadNotices() {
     return;
   }
 
-  const cached = readCache();
+    const cached = readCache();
   if (cached) {
     // Show the cached copy immediately, no spinner, then refresh quietly.
+    showLoading(false);   // ← নতুন লাইন
     allNotices = cached.map(normalizeNotice);
     applyFilters();
     refreshFromApiInBackground();
