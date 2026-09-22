@@ -19,7 +19,7 @@
 
 body{
   margin:0;
-  font-family:'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   background:linear-gradient(180deg,#0b1230 0%, #101a3d 220px, #f2f1ea 220px, #f2f1ea 100%);
   color:var(--text-dark);
   padding-bottom:40px;
