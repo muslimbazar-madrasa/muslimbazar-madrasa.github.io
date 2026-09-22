@@ -53,20 +53,26 @@ function topCategory(list){
 }
 
 async function init(){
+  // আজকের তারিখের লাইন সবসময় দেখাবে, CSV লোড হোক বা না হোক
+  document.getElementById('todayLine').textContent =
+    `আজ ${toBn(today.getDate())} ${gregMonthNamesBn[today.getMonth()]} ${toBn(today.getFullYear())} ইংরেজি, রোজ - ${weekdayFullBn[today.getDay()]}`;
+
+  viewYear = today.getFullYear();
+  viewMonth = today.getMonth();
+
   try{
     const [dates, events] = await Promise.all([
       loadCSV('dates.csv?v=' + Date.now()),
       loadCSV('events.csv?v=' + Date.now())
     ]);
 
-    dates.forEach(row => { dateData[row.date] = row; });
+    dates.forEach(row => { if(row.date) dateData[row.date] = row; });
 
     events.forEach(row => {
       if(!row.start_date) return;
       const start = row.start_date;
       const end = row.end_date && row.end_date.trim() ? row.end_date : row.start_date;
       const cat = (row.category || 'special').trim();
-      if(!CATEGORY_META[cat]){ console.warn('অজানা ক্যাটাগরি, "special" হিসেবে ধরা হলো:', row.category); }
       const catKey = CATEGORY_META[cat] ? cat : 'special';
 
       eventRanges.push({category: catKey, start, end, title: row.title || '', description: row.description || ''});
@@ -80,19 +86,13 @@ async function init(){
         cur.setDate(cur.getDate()+1);
       }
     });
-
-    document.getElementById('todayLine').textContent =
-      `আজ ${toBn(today.getDate())} ${gregMonthNamesBn[today.getMonth()]} ${toBn(today.getFullYear())} ইংরেজি, রোজ - ${weekdayFullBn[today.getDay()]}`;
-
-    renderLegend();
-
-    viewYear = today.getFullYear();
-    viewMonth = today.getMonth();
-    renderMonth();
   }catch(e){
-    document.getElementById('todayLine').textContent = 'ডেটা লোড করতে সমস্যা হয়েছে। dates.csv / events.csv ঠিক আছে কিনা দেখুন।';
-    console.error(e);
+    // CSV লোড না হলেও ক্যালেন্ডার চলবে, শুধু কনসোলে লগ থাকবে — ইউজারকে বিরক্তিকর মেসেজ দেখানো হবে না
+    console.error('dates.csv / events.csv লোড করতে সমস্যা হয়েছে:', e);
   }
+
+  renderLegend();
+  renderMonth();
 }
 
 function renderLegend(){
@@ -166,12 +166,24 @@ function renderMonth(){
 
   document.getElementById('monthTitle').textContent = `${gregMonthNamesBn[viewMonth]} ${toBn(viewYear)}`;
 
+  // সারি শেষে ফাঁকা ঘর যোগ করে গ্রিড সবসময় পূর্ণ ৭-কলাম রাখা (নাহলে শেষ সারিতে খালি সবুজ ফাঁকা দেখায়)
+  const totalCells = startDow + daysInMonth;
+  const trailing = (7 - (totalCells % 7)) % 7;
+  for(let i=0;i<trailing;i++){
+    const c = document.createElement('div');
+    c.className = 'day-cell empty';
+    grid.appendChild(c);
+  }
+
   if(firstRow && lastRow){
+    document.getElementById('bnStrip').style.display = '';
+    document.getElementById('hijriStrip').style.display = '';
     document.getElementById('bnStrip').textContent = bnStripText(firstRow, lastRow);
     document.getElementById('hijriStrip').textContent = hijriStripText(firstRow, lastRow);
   } else {
-    document.getElementById('bnStrip').textContent = 'তথ্য পাওয়া যায়নি (dates.csv-তে এই মাসের ডেটা নেই)';
-    document.getElementById('hijriStrip').textContent = '';
+    // dates.csv-তে এই মাসের ডেটা না থাকলে স্ট্রিপ দুটো শুধু লুকিয়ে রাখা হবে, বিরক্তিকর টেক্সট দেখানো হবে না
+    document.getElementById('bnStrip').style.display = 'none';
+    document.getElementById('hijriStrip').style.display = 'none';
   }
 
   renderEventsList();
