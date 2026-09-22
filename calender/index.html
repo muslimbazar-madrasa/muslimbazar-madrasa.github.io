@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ত্রি-ক্যালেন্ডার | বাংলা - ইংরেজি - হিজরি</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div id="todayLine" class="today-line">লোড হচ্ছে...</div>
+</header>
+
+<main class="wrap">
+
+  <div class="nav-row">
+    <button id="prevBtn" class="nav-btn" aria-label="আগের মাস">&#10094;</button>
+    <div class="month-title" id="monthTitle">—</div>
+    <button id="nextBtn" class="nav-btn" aria-label="পরের মাস">&#10095;</button>
+  </div>
+
+  <button id="todayBtn" class="today-btn">আজকের তারিখ</button>
+
+  <div class="strip bn-strip" id="bnStrip">—</div>
+  <div class="strip hijri-strip" id="hijriStrip">—</div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="grid" id="calendarGrid">
+    <!-- filled by JS -->
+  </div>
+
+  <section class="events-section" id="eventsSection">
+    <h2>এই মাসের বিশেষ দিন</h2>
+    <div id="eventsList" class="events-list"></div>
+  </section>
+
+  <p class="hint">তারিখের উপর ট্যাপ করলে বিস্তারিত দেখতে পারবেন</p>
+
+</main>
+
+<div id="dayModal" class="modal hidden">
+  <div class="modal-card">
+    <button id="modalClose" class="modal-close">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
