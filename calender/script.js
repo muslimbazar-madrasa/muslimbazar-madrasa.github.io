@@ -5,7 +5,7 @@ function toBn(num){
 }
 
 const bnMonthNames = ["বৈশাখ","জ্যৈষ্ঠ","আষাঢ়","শ্রাবণ","ভাদ্র","আশ্বিন","কার্তিক","অগ্রহায়ণ","পৌষ","মাঘ","ফাল্গুন","চৈত্র"];
-const hijriMonthNames = ["মহররম","সফর","রবিউল আউয়াল","রবিউস সানি","জমাদিউল আউয়াল","জমাদিউস সানি","রজব","শা'বান","রমজান","শাওয়াল","জিলক্বদ","জিলহজ্জ"];
+const hijriMonthNames = ["মহররম","সফর","রবিউল আউয়াল","রবিউস সানি","জমাদাল আওয়াল","জমাদাস সানি","রজব","শা'বান","রমজান","শাওয়াল","জিলক্বদ","জিলহজ্জ"];
 const weekdayNamesBn = ["শনি","রবি","সোম","মঙ্গল","বুধ","বৃহঃ","শুক্র"]; // সপ্তাহ শনিবার থেকে শুরু, শুক্রবার সাপ্তাহিক ছুটি
 const weekdayFullBn = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
 const gregMonthNamesBn = ["জানুয়ারী","ফেব্রুয়ারী","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
@@ -13,9 +13,11 @@ const gregMonthNamesBn = ["জানুয়ারী","ফেব্রুয�
 // ---------- Category system ----------
 // Priority: lower index = higher priority when a day has more than one category.
 const CATEGORY_ORDER = ['holiday', 'exam', 'exam_prep', 'special'];
+// Legend-তে দেখানোর ক্রম (ইউজারের চাওয়া অনুযায়ী): বিশেষ দিন, পরীক্ষা, পরীক্ষার প্রস্তুতি, ছুটি
+const LEGEND_ORDER = ['special', 'exam', 'exam_prep', 'holiday'];
 const CATEGORY_META = {
   holiday:   { label: 'ছুটি',              bg: '#ffd9cf', accent: '#d9522f', text: '#7a2c14' },
-  exam:      { label: 'পরীক্ষা চলাকালীন',    bg: '#ffe7b3', accent: '#c98a1b', text: '#6b4a00' },
+  exam:      { label: 'পরীক্ষা',             bg: '#ffe7b3', accent: '#c98a1b', text: '#6b4a00' },
   exam_prep: { label: 'পরীক্ষার প্রস্তুতি',   bg: '#e6dbf5', accent: '#6c4f8c', text: '#402d5c' },
   special:   { label: 'বিশেষ দিন',           bg: '#cdeef0', accent: '#1f7a8c', text: '#0c4650' }
 };
@@ -100,7 +102,7 @@ async function init(){
 function renderLegend(){
   const el = document.getElementById('legend');
   if(!el) return;
-  el.innerHTML = CATEGORY_ORDER.map(cat => {
+  el.innerHTML = LEGEND_ORDER.map(cat => {
     const m = CATEGORY_META[cat];
     return `<span class="legend-chip"><span class="legend-dot" style="background:${m.accent}"></span>${m.label}</span>`;
   }).join('');
@@ -163,7 +165,6 @@ function renderMonth(){
       cell.appendChild(sub);
     }
 
-    cell.addEventListener('click', () => openDayModal(key));
     grid.appendChild(cell);
   }
 
@@ -304,6 +305,37 @@ document.getElementById('modalClose').addEventListener('click', () => {
 document.getElementById('dayModal').addEventListener('click', e => {
   if(e.target.id === 'dayModal') e.target.classList.add('hidden');
 });
+
+// তারিখে ট্যাপ করলে মোডাল খোলা — একবারই বসানো, প্রতি renderMonth()-এ grid.innerHTML রিসেট হলেও এই লিসনার টিকে থাকে
+const gridEl = document.getElementById('calendarGrid');
+let suppressNextClick = false;
+gridEl.addEventListener('click', (e) => {
+  if(suppressNextClick){ suppressNextClick = false; return; }
+  const cell = e.target.closest('.day-cell');
+  if(cell && cell.dataset.key) openDayModal(cell.dataset.key);
+});
+
+// বাম/ডান সোয়াইপ করে মাস পরিবর্তন
+let touchStartX = 0, touchStartY = 0;
+gridEl.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, {passive:true});
+
+gridEl.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  const SWIPE_MIN = 40; // এর কম নড়াচড়াকে সাধারণ ট্যাপ ধরা হবে
+  if(Math.abs(dx) > SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.5){
+    suppressNextClick = true; // সোয়াইপের শেষের ক্লিক যেন মোডাল না খোলে
+    if(dx < 0){
+      viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;}
+    } else {
+      viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;}
+    }
+    renderMonth();
+  }
+}, {passive:true});
 
 document.getElementById('prevBtn').addEventListener('click', () => {
   viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;}
