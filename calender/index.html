@@ -25,16 +25,19 @@
     <button id="nextBtn" class="nav-btn" aria-label="পরের মাস">&#10095;</button>
   </div>
 
-  <button id="todayBtn" class="today-btn">আজকের তারিখ</button>
-
-  <div class="strip bn-strip" id="bnStrip">—</div>
-  <div class="strip hijri-strip" id="hijriStrip">—</div>
-
-  <div class="legend" id="legend"></div>
+  <div class="strips-row">
+    <button id="todayBtn" class="today-side-btn" type="button">আজকের<br>তারিখ</button>
+    <div class="strips-col">
+      <div class="strip bn-strip" id="bnStrip">—</div>
+      <div class="strip hijri-strip" id="hijriStrip">—</div>
+    </div>
+  </div>
 
   <div class="grid" id="calendarGrid">
-    <!-- filled by JS -->
+    <!-- filled by JS: বাম/ডান সোয়াইপ করলেও মাস পাল্টাবে -->
   </div>
+
+  <div class="legend" id="legend"></div>
 
   <section class="events-section" id="eventsSection">
     <h2>এই মাসের বিশেষ দিন</h2>
