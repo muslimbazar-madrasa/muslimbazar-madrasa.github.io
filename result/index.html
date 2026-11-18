@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>পরীক্ষার ফলাফল - মাদরাসা</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WXWEDQ6C8T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WXWEDQ6C8T');
+</script>
+
+<link rel="stylesheet" href="css/result-app.css" />
+<script src="js/settings.js"></script>
+</head>
+<body>
+
+    <!-- ================= টপ ব্র্যান্ড + নেভিগেশন বার ================= -->
+    <header class="rp-topbar">
+        <div class="rp-brand">
+            <img id="rpBrandLogo" class="rp-brand-logo" src="" alt="logo" onerror="this.style.display='none'" />
+            <div class="rp-brand-text">
+                <div class="rp-brand-name" id="rpBrandName"></div>
+                <div class="rp-brand-addr" id="rpBrandAddr"></div>
+            </div>
+        </div>
+        <nav class="rp-nav">
+            <button class="rp-nav-btn" data-view="jamah">জামাত ভিত্তিক ফলাফল</button>
+            <button class="rp-nav-btn" data-view="search">ব্যক্তিগত ফলাফল</button>
+            <button class="rp-nav-btn" data-view="glance">এক নজরে ফলাফল</button>
+            <button class="rp-nav-btn" data-view="chart">পাই চার্ট</button>
+            <a class="rp-nav-home" href="../index.html">মূল পাতা</a>
+        </nav>
+    </header>
+
+    <!-- ================= পরীক্ষা নির্বাচন ================= -->
+    <div class="rp-exambar" id="rpExamBar">
+        <label for="rpExamSelect">পরীক্ষা:</label>
+        <select id="rpExamSelect" class="rp-exam-select"></select>
+    </div>
+
+    <div id="rpStatus" class="rp-status" style="display:none;"></div>
+
+    <div id="rpApp" class="rp-wrap"></div>
+
+    <!-- ============ External Library (Excel পড়ার জন্য) ============ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- ============ Application Modules (নির্দিষ্ট ক্রমে লোড হতে হবে) ============ -->
+    <script src="js/site-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/ranking.js"></script>
+    <script src="js/kitab.js"></script>
+    <script src="js/hifz.js"></script>
+    <script src="js/maktab.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/excel.js"></script>
+    <script src="js/result-app.js"></script>
+
+</body>
+</html>
